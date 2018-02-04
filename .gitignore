@@ -1,3 +1,7 @@
 # Untracked files:
 
 *.ini
+
+config.py
+
+*.sql
