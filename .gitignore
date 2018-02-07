@@ -5,3 +5,5 @@
 config.py
 
 *.sql
+
+/.vscode

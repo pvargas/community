@@ -6,7 +6,7 @@ from marshmallow_peewee import ModelSchema
 from config import Database as config
 
 DATABASE = MySQLDatabase(config.DB, host=config.HOST,
-                         port=config.PORT, user=config.USER, password=config.PAS)
+                         port=config.PORT, user=config.USER)
 
 
 class User(Model):
