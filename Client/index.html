@@ -3,57 +3,91 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
+	  <link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
     <title>Community</title>
 	
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
-	
+    
   </head>
 
   <body>
-    <nav class="navbar navbar-inverse bg-inverse">
-      <a class="navbar-brand acme" href="#">Community</a>
-	 <!--can't get this button to align right without stacking, also fix navbar color-->
-     <!-- <button class="btn btn-primary ml-auto" type="button">Search</button>-->
+  <nav class="navbar navbar-inverse navbar-toggleable-xl sticky-top" style="background: #00171F;">
+      <a class="navbar-brand acme ml-auto" href="#">Community</a>
+      <button class="btn btn-default ml-auto" data-toggle="modal" data-target="#login-modal"
+                                            style="background-color: #003459;
+                                                    border: 1px solid #003459;
+                                                    color: white;" type="button">Log in</button>
 	</nav>
-	
-    <div class="container">
-	  
+
+  <div class="container rounded">
+      <div class="modal fade" id="login-modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+            
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">Log in</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+        
+              <!-- Modal body -->
+              <div class="modal-body">
+                <form>
+                  <div class="form-group row">
+                      <label for="uname-input" class="col-2 col-form-label">Username:</label>
+                      <div class="col-10">
+                        <input name="user" class="form-control" type="text" value="username" id="uname-input">
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <label for="pw-input" class="col-2 col-form-label">Password:</label>
+                      <div class="col-10">
+                        <input name="pass" class="form-control" type="password" id="pw-input">
+                      </div>
+                  </div>
+                  <input type="submit" class="btn btn-primary btn-block" name="login" value="Login">
+                  
+                </form>
+              </div>
+        
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                Don't have an account? Register <a href="#">here</a> <!--don't know why there's no space, don't feel like fixing now-->
+              </div>
+  
+            </div>
+          </div>
+        </div>
 	  <div class="row">
-	    
-		<div class="col-md-3">
-		  <h1 class="page-header mb-4 mt-3">Front page</h1>
-		</div>
-		
-		<div class="col-md-4 offset-md-5">
-	    <form class="form-inline">
-		  <input class="form-control mr-sm-1" type="text" placeholder="Search">
-		  <button class="btn btn-outline-success my-sm-0" type="submit">Search</button>
-	    </form>
-		</div>
+	    <form class="form-inline ml-auto">
+        <input class="form-control mr-sm-1" type="text" placeholder="Search">
+        <button class="btn btn-default my-sm-0" style="background-color: #007EA7;
+                                                      border: 1px solid #007EA7;
+                                                      color: white;" type="submit">Search</button>
+      </form>
 	  </div>
-	  
+      
 	  
       <!--row one-->
       <div class="row">
-		<div class="col-md-1">
-		  <button class="btn btn-primary mt-1 mb-2"><img src="icons/upvote.png"></img></button><br>
-		  <button class="btn btn-default"><img src="icons/downvote.png"></img></button>
-		</div>
-		<div class="col-md-2">
+		    <div class="col-md-1 my-auto">
+		      <button class="btn btn-primary"><img src="icons/upvote.png"></img></button><br>
+		      <button class="btn btn-default"><img src="icons/downvote.png"></img></button>
+		    </div>
+		    <div class="col-md-2 my-auto">
           <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="img/pats.jpg" alt="">
+            <img class="img-fluid rounded mt-center" src="img/pats.jpg" alt="">
           </a>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 my-auto">
           <h5>Patriots win superbowl</h5>
           <p class="tag">Tags: 
-		  <span class="badge badge-pill badge-default">animals</span>
-		  <span class="badge badge-pill badge-default">doggos</span>
-		  <span class="badge badge-pill badge-default">puppers</span>
-		  Posted on: <span class="badge badge-success">2/5/18</span>
-		  </p>
+            <span class="badge badge-pill badge-default">animals</span>
+            <span class="badge badge-pill badge-default">doggos</span>
+            <span class="badge badge-pill badge-default">puppers</span>
+            <span class="ml-1">Posted on: <span class="badge badge-success">2/5/18</span></span>
+          </p>
           <a class="btn btn-default" href="#">View comments<span class="badge badge-info ml-2">231</span></a>
         </div>
       </div>
@@ -69,7 +103,7 @@
 		</div>
 		<div class="col-md-2">
           <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/156x94" alt="">
+            <img class="img-fluid rounded" src="http://placehold.it/156x94" alt="">
           </a>
         </div>
         <div class="col-md-9">
@@ -94,7 +128,7 @@
 		</div>
 		<div class="col-md-2">
           <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/156x94" alt="">
+            <img class="img-fluid rounded" src="http://placehold.it/156x94" alt="">
           </a>
         </div>
         <div class="col-md-9">
@@ -113,16 +147,16 @@
 	  
 	   <!--row four-->
       <div class="row">
-		<div class="col-md-1">
+		<div class="col-md-1 col-xs-1">
 		  <button class="btn btn-default mt-1 mb-2"><img src="icons/upvote.png"></img></button><br>
 		  <button class="btn btn-default"><img src="icons/downvote.png"></img></button>
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-2 col-xs-2">
           <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/156x94" alt="">
+            <img class="img-fluid rounded" src="http://placehold.it/156x94" alt="">
           </a>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-xs-9">
           <h5>Just got a new doggo</h5>
           <p class="tag">Tags: 
 		  <span class="badge badge-pill badge-default">animals</span>
@@ -144,7 +178,7 @@
 		</div>
 		<div class="col-md-2">
           <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/156x94" alt="">
+            <img class="img-fluid rounded" src="http://placehold.it/156x94" alt="">
           </a>
         </div>
         <div class="col-md-9">
@@ -160,28 +194,33 @@
       <!--row five-->
 
       <hr>
-	  
-	  <div class="overlay">
-	  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-      <div class="overlay-content">
-		<a href="#">About</a>
-		<a href="#">Services</a>
-		<a href="#">Clients</a>
-		<a href="#">Contact</a>
+      <h2>Collapsible Panel</h2>
+      <p>Click on the collapsible panel to open and close it.</p>
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#collapse1">Collapsible panel</a>
+            </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body">Panel Body</div>
+            <div class="panel-footer">Panel Footer</div>
+          </div>
+        </div>
       </div>
-	  </div>
-	  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
-    </div>
+        
+  </div>
 	
-<script>
-function openNav() {
-	document.getElementById("myNav").style.width = "80%";
-}
-
-function closeNav() {
-	document.getElementById("myNav").style.width = "0%";
-}
-</script>
+  <script>
+    function openNav() {
+        document.getElementById("ovlay").style.height = "100%";
+    }
+    
+    function closeNav() {
+        document.getElementById("ovlay").style.height = "0%";
+    }
+  </script>
 	
 	
 	
