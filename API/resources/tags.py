@@ -28,7 +28,7 @@ class TagList(Resource):
             if(request.is_json):
                 data = request.get_json(force=True)
                 if 'name' in data:
-                   
+
                     name = data['name']
 
                     query = models.Tag.select().where(models.Tag.name == name)
@@ -37,8 +37,8 @@ class TagList(Resource):
                     else:
                         tag_id = models.Tag.insert(name=name).execute()
                         query = models.Tag.get(models.Tag.id == tag_id)
-                        user_schema = models.UserSchema()
-                        output = user_schema.dump(query).data
+                        tag_schema = models.UserSchema()
+                        output = tag_schema.dump(query).data
                         return jsonify({'tag': output})
                 else:
                     return jsonify({'error': {'message': 'missing required field(s).'}})
