@@ -16,7 +16,7 @@ api = Api(users_api)
 class UserList(Resource):
     def get(self):
         try:
-            query = models.User.select()
+            query = models.User.select().order_by(models.User.id)
             user_schema = models.UserSchema(many=True)
             output = user_schema.dump(query).data
             return jsonify({'users': output})
@@ -33,8 +33,8 @@ class UserList(Resource):
                     if query.exists():
                         return jsonify({"error":{'message':'Username already exists'}})
                     else:
-                        models.User.insert(name=name).execute()
-                        query = models.User.get(models.User.name == name)
+                        user_id = models.User.insert(name=name).execute()
+                        query = models.User.get(models.User.id == user_id)
                         user_schema = models.UserSchema()
                         output = user_schema.dump(query).data
                         return jsonify({'user': output})
@@ -48,14 +48,13 @@ class UserList(Resource):
 class User(Resource):
     def get(self, name):
         try:
-            #query = models.User.get(id=id)
             query = models.User.get(models.User.name == name)
             user_schema = models.UserSchema()
             output = user_schema.dump(query).data
             return jsonify({'user': output})
-        except:
-            pass
+            
+        except models.DoesNotExist:
+            return jsonify({'error': {'message': 'record does not exist.'}})
 
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')
-#api.add_resource(User, '/users/<int:id>', endpoint='user')
