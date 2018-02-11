@@ -6,7 +6,7 @@ from marshmallow_peewee import ModelSchema
 from config import Database as config
 
 DATABASE = MySQLDatabase(config.DB, host=config.HOST,
-                         port=config.PORT, user=config.USER)
+                         port=config.PORT, user=config.USER, password=config.PAS)
 
 
 class User(Model):
@@ -85,10 +85,46 @@ class CommentVotes(Model):
         primary_key = CompositeKey('comment_id', 'user_id')
 
 
+
+
+# Schema for all the above classes
+
+
 class UserSchema(ModelSchema):
 
     class Meta:
         model = User
+        
+class PostSchema(ModelSchema):
+
+    class Meta:
+        model = Post
+
+class PostVotesSchema(ModelSchema):
+
+    class Meta:
+        model = PostVotes
+
+class TagSchema(ModelSchema):
+
+    class Meta:
+        model = Tag
+
+class PostTagsSchema(ModelSchema):
+
+    class Meta:
+        model = PostTags
+
+class CommentSchema(ModelSchema):
+
+    class Meta:
+        model = Comment
+
+class CommentVotesSchema(ModelSchema):
+
+    class Meta:
+        model = CommentVotes
+ 
 
 
 def initialize():

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 import models
 from config import App as config
@@ -11,8 +11,8 @@ app.register_blueprint(posts_api, url_prefix=config.URL_PREFIX)
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello there, Chamchee!'
+def root():
+    return jsonify({'message': 'Nothing to see here.'})  
 
 
 if __name__ == '__main__':
