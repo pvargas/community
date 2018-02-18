@@ -4,11 +4,17 @@ body {
   background-color: #F8F8F8;
 }
 
+footer {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  line-height: 50px;
+}
+
 /* page margins */
 body>.container {
   max-width: 70rem;
   border: 1px solid #BEBEBE;
-  padding: 18px;
   padding-top: 2px;
 }
 
@@ -29,7 +35,7 @@ h1 {
 }
 
 /*
- *navbar stuff
+ * navbar 
  */
 a.navbar-brand{
 	text-align: center;
@@ -40,8 +46,26 @@ nav.navbar{
   margin-bottom: 10px;
   padding-top: 0px;
   padding-bottom: 0px;
+  background: #00171F;
 }
 
+/* login button */
+nav>button {
+  background-color: #003459;
+  border: 1px solid #003459;
+  color: white;
+}
+
+/* search bar button*/
+#search {
+  background-color: #007EA7;
+  border: 1px solid #007EA7;
+  color: white;
+}
+
+/*
+ * misc
+ */
 .tag{
   font-size: 12px;
 
