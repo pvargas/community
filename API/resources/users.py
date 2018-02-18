@@ -29,11 +29,12 @@ class UserList(Resource):
                 data = request.get_json(force=True)
                 if 'name'in data:
                     name = data['name']
+                    email = data['email']
                     query = models.User.select().where(models.User.name == name)
                     if query.exists():
                         return jsonify({"error":{'message':'Username already exists'}})
                     else:
-                        user_id = models.User.insert(name=name).execute()
+                        user_id = models.User.insert(name=name, email=email).execute()
                         query = models.User.get(models.User.id == user_id)
                         user_schema = models.UserSchema()
                         output = user_schema.dump(query).data

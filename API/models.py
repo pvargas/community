@@ -1,15 +1,19 @@
 import datetime
 
 from peewee import *
-from marshmallow_peewee import ModelSchema
+from marshmallow_peewee import ModelSchema #, fields, validate
 from playhouse.migrate import *
+
+from argon2 import PasswordHasher
 
 from config import Database as config
 
 DATABASE = MySQLDatabase(config.DB, host=config.HOST,
                          port=config.PORT, user=config.USER, password=config.PAS)
 migrator = MySQLMigrator(DATABASE)
+HASHER = PasswordHasher()
 
+### models
 
 class User(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -17,10 +21,33 @@ class User(Model):
     member_since = DateTimeField(
         constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
     is_moderator = BooleanField(constraints=[SQL('DEFAULT FALSE')])
+    email = CharField(unique=True, default='')
+    password = CharField(default='')
 
     class Meta:
         database = DATABASE
+    
+    @classmethod
+    def create_user(cls, name, email, password, **kwargs):
+        email = email.lower()
+        try:
+            cls.select().where(
+                (cls.email==email)|(cls.name**name)      
+            ).get()
+        except cls.DoesNotExist:
+            user = cls(name=name, email=email)
+            user.password = user.set_password(password)
+            user.save()
+            return user
+        else:
+            raise Exception("Username or email already exist.")
 
+    @staticmethod
+    def set_password(password):        
+        return HASHER.hash(password)
+
+    def verify_password(self, password):
+        return HASHER.verify(self.password, password)
 
 class Post(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -87,14 +114,13 @@ class CommentVotes(Model):
         primary_key = CompositeKey('comment_id', 'user_id')
 
 
-# Schema for all the above classes
+### Schemas for all the above models
 
 
 class UserSchema(ModelSchema):
 
     class Meta:
         model = User
-
 
 class PostSchema(ModelSchema):
 
@@ -139,5 +165,7 @@ def initialize():
     migrate(
         # Make `posts` allow NULL values.
         # migrator.drop_not_null('post', 'last_modified')
+        #migrator.add_column('user', 'email', User.email),
+        #migrator.add_column('user', 'password', User.password),
     )
     DATABASE.close()
