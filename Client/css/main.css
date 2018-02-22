@@ -1,9 +1,30 @@
 
+/*
+ * Fonts
+ */
+.font-header {
+  font-family: 'Acme';
+  font-size: 30px;
+}
+.font-main {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+}
+
+
+/*
+ * Page structure
+ */
 body {
   padding-bottom: 50px;
   background-color: #F8F8F8;
 }
-
+/* page margins */
+body>.container-fluid {
+  max-width: 70rem;
+  border: 1px solid #BEBEBE;
+  padding-top: 2px;
+}
 footer {
   position: fixed;
   width: 100%;
@@ -11,51 +32,26 @@ footer {
   line-height: 50px;
 }
 
-/* page margins */
-body>.container {
-  max-width: 70rem;
-  border: 1px solid #BEBEBE;
-  padding-top: 2px;
-}
 
 /*
- * Typography
- */
-
-h1 {
-  margin-bottom: 20px;
-  padding-bottom: 9px;
-  border-bottom: 1px solid #eee;
-}
-
-/* title font */
-.acme {
-  font-family: 'Acme';
-  font-size: 30px;
-}
-
-/*
- * navbar 
+ * Navbar 
  */
 a.navbar-brand{
 	text-align: center;
 	display:inline-block;
 }
-
 nav.navbar{
   margin-bottom: 10px;
   padding-top: 0px;
   padding-bottom: 0px;
   background: #00171F;
 }
-
 /* login button */
 nav>button {
   background-color: #003459;
   border: 1px solid #003459;
   color: white;
 }
-
 /* search bar button*/
 #search {
   background-color: #007EA7;
@@ -63,19 +59,43 @@ nav>button {
   color: white;
 }
 
+
 /*
- * misc
+ * Card display for posts
+ */
+ @media screen and (min-width: 768px){
+  .card {
+    flex-direction: row;
+  }
+
+  .card img {
+    height: 100%;
+    width: auto;
+    max-width: 40%;
+  }
+}
+.card {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.card img{
+  max-height: 15rem;
+}
+.card-body {
+  padding: 1rem;
+}
+
+
+/*
+ * Misc
  */
 .tag{
   font-size: 12px;
 
 }
-
-
-
-
-
-
+.center{
+  margin-right: 15rem;
+}
 
 
 

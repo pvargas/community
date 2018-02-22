@@ -3,24 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
-  <title>Community</title>
+  <link href="https://fonts.googleapis.com/css?family=Acme|Roboto" rel="stylesheet">
 
   <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link href="css/main.css" rel="stylesheet">
 
   <!--for icons-->
   <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+
+  <title>Community</title>
+
 </head>
 
-<body>
+<body class="font-main">
+  
   <nav class="navbar navbar-inverse navbar-toggleable-xl sticky-top">
-      <a class="navbar-brand acme ml-auto" href="#">Community</a>
-      <button class="btn btn-default ml-auto" data-toggle="modal" data-target="#login-modal"
-                                            type="button">Log in</button>
-	</nav>
+    <div class="container">
+      <a class="nav navbar-brand font-header mx-auto" href="#">Community</a>
 
-  <div class="container rounded">
+      <form class="form-inline">
+        <div class="form-group">
+          <input class="form-control" type="text" placeholder="Search">
+          <button class="btn btn-default input-group-addon" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+
+      <button class="btn btn-default ml-4 mr-auto" data-toggle="modal" data-target="#login-modal"
+                                            type="button">Log in</button>
+    </div>
+  </nav>
+
+  
+  <div class="container-fluid rounded">
+      <h3>Top posts</h3>
     <div class="modal fade" id="login-modal"><!--Login Modal Stuff-->
       <div class="modal-dialog">
         <div class="modal-content">
@@ -65,40 +80,68 @@
       </div>
     </div>
 
-    <form>
-      <div class="form-group row">
-        <div class="col-sm-4 offset-sm-8 input-group">
-          <input class="form-control" type="text" placeholder="Search">
-          <button class="btn btn-default input-group-addon" type="submit"><i class="fas fa-search"></i></button>
+    
+    
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <div class="card">
+          <!--Card image-->
+          <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20%282%29.jpg" alt="Card image cap">
+      
+          <!--Card content-->
+          <div class="card-body">
+              <!--Title-->
+              <h4 class="card-title">Card title</h4>
+              <!--Text-->
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="btn btn-primary">Button</a>
+          </div>
         </div>
       </div>
-    </form>
-	  
-      <!--row one-->
-      <div class="row">
-		    <div class="col-md-1 my-auto">
-		      <button class="btn btn-primary"><img src="icons/upvote.png"></img></button><br>
-		      <button class="btn btn-default"><img src="icons/downvote.png"></img></button>
-		    </div>
-		    <div class="col-md-2 my-auto">
-          <a href="#">
-            <img class="img-fluid rounded mt-center" src="img/pats.jpg" alt="">
-          </a>
-        </div>
-        <div class="col-md-9 my-auto">
-          <h5>Patriots win superbowl</h5>
-          <p class="tag">Tags: 
-            <span class="badge badge-pill badge-default">animals</span>
-            <span class="badge badge-pill badge-default">doggos</span>
-            <span class="badge badge-pill badge-default">puppers</span>
-            <span class="ml-1">Posted on: <span class="badge badge-success">2/5/18</span></span>
-          </p>
-          <a class="btn btn-default" href="#">View comments<span class="badge badge-info ml-2">231</span></a>
+      <div class="col-md-6 col-sm-12">
+        <div class="card">
+          <!--Card image-->
+          <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20%282%29.jpg" alt="Card image cap">
+        
+          <!--Card content-->
+          <div class="card-body">
+            <!--Title-->
+            <h4 class="card-title">Card title</h4>
+            <!--Text-->
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="btn btn-primary">Button</a>
+          </div>
         </div>
       </div>
-      <!--/row one-->
+    </div>
 
-      <hr>
+    <hr>
+
+    <!--row one-->
+    <div class="row">
+      <div class="col-md-1 my-auto">
+        <button class="btn btn-primary"><img src="icons/upvote.png"></img></button><br>
+        <button class="btn btn-default"><img src="icons/downvote.png"></img></button>
+      </div>
+      <div class="col-md-2 my-auto">
+        <a href="#">
+          <img class="img-fluid rounded mt-center" src="img/pats.jpg" alt="">
+        </a>
+      </div>
+      <div class="col-md-9 my-auto">
+        <h5>Patriots win superbowl</h5>
+        <p class="tag">Tags: 
+          <span class="badge badge-pill badge-default">animals</span>
+          <span class="badge badge-pill badge-default">doggos</span>
+          <span class="badge badge-pill badge-default">puppers</span>
+          <span class="ml-1">Posted on: <span class="badge badge-success">2/5/18</span></span>
+        </p>
+        <a class="btn btn-default" href="#">View comments<span class="badge badge-info ml-2">231</span></a>
+      </div>
+    </div>
+    <!--/row one-->
+
+    <hr>
 	  
 	   <!--row two-->
       <div class="row">
