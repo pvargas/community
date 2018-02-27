@@ -3,15 +3,47 @@
  * Fonts
  */
 .font-header {
-  font-family: 'Acme';
-  font-size: 30px;
+  /*font-family: 'Acme';*/
+  font-family: 'Abril Fatface', cursive;  
+  font-size: 2.2em !important;  
 }
-.font-main {
+
+.title a {
+  font-family: 'Merriweather', serif;
+  font-size: 0.9em;  
+  text-decoration: none;
+  color: black;
+}
+
+.title a:hover {
+  color: black;
+  text-decoration-color: #dfdfdf !important;
+}
+
+.title a:visited {
+  text-decoration: none;
+  color: black;
+}
+
+.section {
+  font-size: 0.9em;  
+  color: #4d4d4d;
+  border-top: 0.1em solid #dddddd;  
+  margin-bottom: 1em;
+}
+
+.main {
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  font-size: 1em;
 }
 
+.margins1 {
+  margin-bottom: 1.5em;
+}
 
+.margins2 {
+  margin-top: 2em;
+}
 /*
  * Page structure
  */
@@ -22,7 +54,7 @@ body {
 /* page margins */
 body>.container-fluid {
   max-width: 70rem;
-  border: 1px solid #BEBEBE;
+  /*border: 1px solid #BEBEBE;*/
   padding-top: 2px;
 }
 footer {
@@ -37,28 +69,28 @@ footer {
  * Navbar 
  */
 a.navbar-brand{
+  /*
 	text-align: center;
-	display:inline-block;
+  display:inline-block;
+  */
+  font-family: 'Abril Fatface', cursive;  
+  font-size: 2.2em !important;  
 }
 nav.navbar{
-  margin-bottom: 10px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  background: #00171F;
+  
+  margin-bottom: 1em;
+  padding-top: .2em;
+  padding-bottom: .2em;
+  background-color: #ffffff;
+  
 }
-/* login button */
+
+/* login button 
 nav>button {
   background-color: #003459;
   border: 1px solid #003459;
   color: white;
-}
-/* search bar button*/
-#search {
-  background-color: #007EA7;
-  border: 1px solid #007EA7;
-  color: white;
-}
-
+}*/
 
 /*
  * Card display for posts
@@ -98,11 +130,9 @@ nav>button {
 }
 
 
-
-
-
-
-
+btn-search {
+  color: black !important;  
+}
 
 
 /* everything for settings overlay 
