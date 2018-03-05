@@ -1,17 +1,16 @@
 import datetime
 
 from peewee import *
-from marshmallow_peewee import ModelSchema #, fields, validate
+from marshmallow_peewee import ModelSchema
 from playhouse.migrate import *
 
-from argon2 import PasswordHasher
+from passlib.hash import sha256_crypt
 
 from config import Database as config
 
 DATABASE = MySQLDatabase(config.DB, host=config.HOST,
                          port=config.PORT, user=config.USER, password=config.PAS)
 migrator = MySQLMigrator(DATABASE)
-HASHER = PasswordHasher()
 
 ### models
 
@@ -43,11 +42,11 @@ class User(Model):
             raise Exception("Username or email already exist.")
 
     @staticmethod
-    def set_password(password):        
-        return HASHER.hash(password)
+    def set_password(password):       
+        return sha256_crypt.encrypt(password)
 
     def verify_password(self, password):
-        return HASHER.verify(self.password, password)
+        return sha256_crypt.verify(password, self.password)
 
 class Post(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -77,6 +76,19 @@ class Tag(Model):
     id = PrimaryKeyField(primary_key=True)
     name = CharField(45, unique=True)
 
+    @classmethod
+    def create_tag(cls, name, **kwargs):
+        name = name.lower()
+        try:
+            cls.select().where(cls.name==name).get()
+        except cls.DoesNotExist:
+            tag = cls(name=name)
+            tag.save()
+            return tag
+        else:
+            raise Exception("tag already exist.")
+
+
     class Meta:
         database = DATABASE
 
@@ -84,6 +96,17 @@ class Tag(Model):
 class PostTags(Model):
     post_id = ForeignKeyField(Post)
     tag_id = ForeignKeyField(Tag)
+
+    @classmethod
+    def create_relationship(cls, post_id, tag_id, **kwargs):
+        try:
+            cls.select().where(cls.post_id==post_id&cls.tag_id==tag_id).get()
+        except cls.DoesNotExist:
+            relationship = cls(post_id=post_id, tag_id=tag_id)
+            relationship.save()
+            return relationship
+        else:
+            raise Exception("post-tag relationship already exists.")
 
     class Meta:
         database = DATABASE

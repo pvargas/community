@@ -1,6 +1,6 @@
 import time, datetime
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 
 import models
 from config import App as config
