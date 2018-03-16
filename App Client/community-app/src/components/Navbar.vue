@@ -1,0 +1,84 @@
+<template>
+<div class="w_navbar">
+  
+  <b-navbar toggleable variant="default" type="light">
+
+    <b-navbar-brand class="font-header">Community</b-navbar-brand>
+
+    <b-navbar-toggle target="hamburger-btn"></b-navbar-toggle>
+
+    <b-collapse is-nav id="hamburger-btn">
+        <b-navbar-nav class="ml-auto">
+            <b-nav-form class="mr-2">
+                <b-form-input type="text" placeholder="Search"></b-form-input>
+                <span class="input-group-btn">
+                <b-button variant="outline-success" type="submit" v-on:click="search">
+                    <i class="fas fa-search"></i>
+                </b-button>
+                </span>
+            </b-nav-form>
+            
+            <b-button variant="outline-success" data-toggle="modal" data-target="#login-modal"
+                                                type="button">Log in</b-button>
+        </b-navbar-nav>
+    </b-collapse>
+  </b-navbar>
+  <b-navbar id="nav2">
+      <ul class="generic-tags">
+          <li>Technology</li>
+          <li>Science</li>
+          <li>Politics</li>
+          <li>Business</li>
+          <li>Media</li>
+          <li>Pop Culture</li>
+          <li>World News</li>
+      </ul>
+  </b-navbar>
+  
+</div>
+</template>
+
+<script>
+import LoginModal from './LoginModal.vue'
+export default {
+    name: 'navigator',
+    data: function(){
+      return {
+        searchExpand: false
+      }
+    },
+    methods: {
+      search: function(e) {
+        e.preventDefault()
+        searchExpand = true
+        //TODO: add functionality for searching website
+      }
+    },
+    components: {
+      LoginModal
+    }
+}
+</script>
+
+<style>
+.font-header {
+    font-family: 'Abril Fatface', cursive;  
+    font-size: 2.2em !important;  
+}
+
+.generic-tags {
+    margin: auto;
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+}
+
+.generic-tags li{
+    margin-right: 3rem;
+}
+
+#nav2 {
+    margin-top: -.4rem;
+}
+</style>
