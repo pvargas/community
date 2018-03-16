@@ -32,21 +32,22 @@ class UserList(Resource):
                 name = data['name']
                 email = data['email']
                 password = data['password']
+
+                # hi                
+                query = models.User.select().where((models.User.name == name) | (models.User.email == email))
                 
-                user = models.User.create_user(name, email, password)
-
-                '''                
-                query = models.User.select().where(models.User.name == name)
-
                 if query.exists():
-                    return jsonify({"error":{'message':'Username already exists'}})
-                else:
-                    user_id = models.User.insert(name=name, email=email).execute()
-                    query = models.User.get(models.User.id == user_id)
+                    return jsonify({"error":{'message':'Username or email already exist.'}})
+
+                else:     
+                    print("log2")               
+                    user = models.User.create_user(name, email, password)
+
+                    query = models.User.get(models.User.id == user.id)
                     user_schema = models.UserSchema()
                     output = user_schema.dump(query).data
                     return jsonify({'user': output})
-                '''
+                
 
                 return jsonify(user)
             else:
