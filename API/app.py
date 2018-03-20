@@ -26,9 +26,13 @@ def up_time(seconds):
     return "%d:%02d:%02d" % (h, m, s)
 
 
+@app.route('/api')
+def info():
+    return jsonify({'Community API':{'Version':config.API_VERSION,'Up Time': up_time(start_time)}})  
+    
 @app.route('/')
 def root():
-    return jsonify({'Community':{'API version':config.API_VERSION,'up time': up_time(start_time)}})  
+    return '️✌👌💩👌✌️'
 
 
 if __name__ == '__main__':

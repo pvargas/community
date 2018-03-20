@@ -63,9 +63,9 @@ class PostList(Resource):
                     else:
                         print('log 3')
                         post_id = models.Post.insert(title=title, is_url=is_url, author=author, content=content).execute()
-                        
+                        '''
                         insert_tags(tags, post_id)
-                        print('log 4')
+                        print('log 4')'''
 
                         query = models.Post.get(models.Post.id == post_id)
                         post_schema = models.PostSchema()

@@ -1,4 +1,4 @@
-# Untracked files:
+# Untracked files and directoires:
 
 *.ini
 
@@ -9,3 +9,7 @@ config.py
 *.code-workspace
 
 /.vscode
+
+/API/api_env
+
+/API/__pycache__
