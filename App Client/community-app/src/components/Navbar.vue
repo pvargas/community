@@ -17,9 +17,10 @@
                 </b-button>
                 </span>
             </b-nav-form>
-            
-            <b-button variant="outline-success" data-toggle="modal" data-target="#login-modal"
-                                                type="button">Log in</b-button>
+
+            <LoginModal></LoginModal>
+            <b-btn v-b-modal="'login-modal'" variant="outline-success" type="button">Log in</b-btn>
+
         </b-navbar-nav>
     </b-collapse>
   </b-navbar>

@@ -74,62 +74,19 @@
     </b-col>
 </b-row>
 
-<hr>
-
-<!--row-->
-<b-row v-for="post in allPosts" v-bind:key="post.id" class="post-row">
-    <b-col cols="3" class="my-auto">
-        <a href="#">
-            <img class="img rounded mt-center" src="http://placehold.it/156x94" alt="">
-        </a>
-    </b-col>
-    <b-col cols="9" class="my-auto">
-        <h4>{{post.title}}</h4>
-        <p class="tag">Tags: 
-            <span class="badge badge-pill badge-primary">sports</span>
-            <span class="badge badge-pill badge-default">football</span>
-            <span class="badge badge-pill badge-default">nfl</span>
-            <span class="ml-1">Posted on: <span class="badge badge-success">2/5/18</span></span>
-        </p>
-        <a class="btn btn-default" href="#">View comments<span class="badge badge-info ml-2">231</span></a>
-    </b-col>
-</b-row>
-<!--row-->
+<h1 class="section">ALL POSTS</h1>
+<PostsList></PostsList>
 
 </div>
 </template>
 
 <script>
+import PostsList from './PostsList.vue'
 export default {
-  name: 'App',
-
-  data() {
-      return {
-          allPosts: []
-      }
-  },
-  created: function() {
-      //actual endpoint http://community.io/api/v1/posts  
-      this.$http.get('https://jsonplaceholder.typicode.com/posts')
-        .then(function(response){
-            if(response.status == "200"){
-                let list = response.data
-                for (var i = 0; i < list.length; i++){
-                    var item = list[i]
-                    this.allPosts.push({
-                        author: item.userId,//author: item.author, 
-                        content: item.body,//content: item.content,
-                        title: item.title,
-                        id: item.id
-                        //created_at: item.created_at,
-                        //is_url: item.is_url,
-                        //last_modified: item.last_modified
-                        
-                    })
-                }
-            }
-        })
-  }
+    name: 'Posts',
+    components: {
+        PostsList
+    }
 }
 </script>
 

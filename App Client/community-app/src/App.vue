@@ -24,7 +24,7 @@ body {
   font-size: 16px;
   background-color: #F8F8F8;
 }
-footer {
+.page-footer {
   position: fixed;
   width: 100%;
   bottom: 0;

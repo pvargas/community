@@ -10,6 +10,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Posts from './components/Posts.vue'
+import PostContent from './components/PostContent.vue'
+import UserPage from './components/UserPage.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
@@ -17,10 +19,32 @@ Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 
 const routes = [
-  { 
-    path: '/',
-    component: Posts
-  }
+  
+    {
+        path: '/',
+        redirect: {
+            name: 'posts'
+        }
+    },
+    {
+        path: '/posts',
+        name: 'posts',
+        component: Posts
+    },
+    { 
+        path: '/posts/:postid',
+        name: 'post',
+        component: PostContent
+    },
+    {
+        path: '/users',
+        name: 'users'
+    },
+    {
+        path: '/users/:userid',
+        name: 'user',
+        component: UserPage
+    }
 ]
 
 const router = new VueRouter({
@@ -35,4 +59,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 }).$mount('#app')
-//
