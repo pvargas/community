@@ -2,13 +2,12 @@
 <div class="w-postlist">
 
 <b-card-group columns>
-    <b-card id="card-title" v-for="post in allPosts" v-bind:key="post.id" 
-            v-bind:title="post.title"
+    <b-card class="card-text" v-for="post in allPosts" v-bind:key="post.id" 
             img-src="http://placehold.it/200x150"
             img-fluid
             img-alt="image"
             img-top>
-
+        <router-link :to="'/posts/' + post.id"><span class="card-title">{{post.title}}</span></router-link>
         <p class="text-muted">
             Posted on 3/17/18 by:
             <a href="#">Author{{post.author}}</a>
@@ -60,10 +59,15 @@ export default {
 </script>
 
 <style scoped>
-#card-title {
+.card-text {
   font-family: 'Merriweather', serif;
-  font-size: 0.9em;  
   text-decoration: none;
   color: black;
+}
+
+.card-title {
+    font-size: 1.5rem; 
+    text-decoration: none;
+    color: black;
 }
 </style>

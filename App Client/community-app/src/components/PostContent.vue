@@ -1,24 +1,28 @@
 <template>
 <div class="w_content">
+<h1 class="section"></h1>
 <b-row>
-        <b-col cols="2">
-            <div class="score margin-top-votes">
-                <b-button v-on:click="toggleDown = false" :pressed.sync="toggleUp" class="vote-btn" variant="outline-success"><i class="fas fa-angle-up"></i></b-button>
-                <span>44.5k</span>
-                <b-button v-on:click="toggleUp = false" :pressed.sync="toggleDown" class="vote-btn" variant="outline-success"><i class="fas fa-angle-down"></i></b-button>
-            </div>
-            <hr>
-            <p class="badge badge-info">Tags</p>
-        
-        </b-col>
-    <b-col cols="8">
-        <h1 class="mt-4" id="post-title">Post Title</h1>
-        <p>
-            by <a href="#">Author</a>
-            <img fluid class="rounded-circle mx-2" src="http://placehold.it/50x50"/>
-        </p>
-
+    <b-col sm="1" xs="12">
+        <div class="score mt-4">
+            <b-button v-on:click="toggleDown = false" :pressed.sync="toggleUp" class="vote-btn" variant="outline-success"><i class="fas fa-angle-up"></i></b-button>
+            <span>44.5k</span>
+            <b-button v-on:click="toggleUp = false" :pressed.sync="toggleDown" class="vote-btn" variant="outline-success"><i class="fas fa-angle-down"></i></b-button>
+        </div>
         <hr>
+
+    
+    </b-col>
+    <b-col sm="11" xs="12">
+        <b-row>
+            <b-col sm="12">
+                <span><h1 class="post-title">Post Title</h1> by <a href="#">Author</a></span>
+        
+            <b-img fluid class="rounded-circle mx-2" src="http://placehold.it/50x50"/>
+            </b-col>
+        </b-row>
+        
+        
+        <p class="badge badge-info">Tags</p>
 
         <p class="text-muted">Posted on 11/11/11</p>
 
@@ -177,19 +181,29 @@ export default {
     align-items: center;
 }
 
-.margin-top-votes {
-    margin-top: 4rem;
-}
-
 .vote-btn {
     width: 2.5rem;
     height: 2.2rem;
+    border: 0px;
 }
 
-#post-title {
+.post-title {
   font-family: 'Merriweather', serif;
   font-size: 2.2em;  
   text-decoration: none;
   color: black;
 }
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.section {
+  font-size: 0.9em;  
+  color: #4d4d4d;
+  border-top: 0.1em solid #dddddd;  
+  margin-bottom: 1em;
+}
+
 </style>

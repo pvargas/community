@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar></Navbar>
-    <b-container fluid>
+    <b-container>
       <router-view></router-view>
     </b-container>
   </div>
@@ -18,7 +18,7 @@ export default {
 </script>
 
 <style>
-
+/* fonts used: Roboto:400/500 , Abril Fatface, Merriweather*/
 body {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;

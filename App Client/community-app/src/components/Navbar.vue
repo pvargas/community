@@ -3,23 +3,23 @@
   
   <b-navbar toggleable variant="default" type="light">
 
-    <b-navbar-brand class="font-header">Community</b-navbar-brand>
+    <b-navbar-brand v-bind:to="'/posts'" class="font-header">Community</b-navbar-brand>
 
     <b-navbar-toggle target="hamburger-btn"></b-navbar-toggle>
 
     <b-collapse is-nav id="hamburger-btn">
-        <b-navbar-nav class="ml-auto">
-            <b-nav-form class="mr-2">
-                <b-form-input type="text" placeholder="Search"></b-form-input>
+        <b-navbar-nav class="ml-auto nav-form">
+            <b-nav-form class="mr-3">
+                <b-form-input class="search-bar" type="text" placeholder="Search"></b-form-input>
                 <span class="input-group-btn">
-                <b-button variant="outline-success" type="submit" v-on:click="search">
+                <b-button class="nav-btn" variant="outline-success" type="submit" v-on:click="search">
                     <i class="fas fa-search"></i>
                 </b-button>
                 </span>
             </b-nav-form>
 
             <LoginModal></LoginModal>
-            <b-btn v-b-modal="'login-modal'" variant="outline-success" type="button">Log in</b-btn>
+            <b-btn class="nav-btn" v-b-modal="'login-modal'" variant="outline-success" type="button">Log in</b-btn>
 
         </b-navbar-nav>
     </b-collapse>
@@ -77,6 +77,14 @@ export default {
 
 .generic-tags li{
     margin-right: 3rem;
+}
+
+.nav-btn {
+    font-size: .9em;
+}
+
+.search-bar {
+    font-size: .9em;
 }
 
 #nav2 {

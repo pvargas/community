@@ -1,7 +1,6 @@
 <template>
 <!--Login Modal Stuff-->
 <b-modal id="login-modal" title="Log in">
-    
         <b-form>
             <b-form-group>
                 <b-row>
