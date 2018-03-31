@@ -14,3 +14,4 @@ config.py
 /API/api_env
 
 /API/__pycache__
+/API/resources/__pycache__
