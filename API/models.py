@@ -187,7 +187,7 @@ def initialize():
                             CommentVotes, PostTags], safe=True)
     migrate(
         # Make `posts` allow NULL values.
-        # migrator.drop_not_null('post', 'last_modified')
+        #migrator.drop_not_null('post', 'last_modified')
         #migrator.add_column('user', 'email', User.email),
         #migrator.add_column('user', 'password', User.password),
     )

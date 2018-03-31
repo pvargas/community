@@ -9,7 +9,6 @@
             <b-button v-on:click="toggleUp = false" :pressed.sync="toggleDown" class="vote-btn" variant="outline-success"><i class="fas fa-angle-down"></i></b-button>
         </div>
         <hr>
-
     
     </b-col>
     <b-col sm="11" xs="12">

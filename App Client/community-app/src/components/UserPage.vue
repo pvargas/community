@@ -3,7 +3,7 @@
 <h1 class="section"></h1>
 
 
-<b-row class="mb-2">
+<b-row class="mb-4">
     <b-col sm="4" xs="12">
         <b-button v-on:click="showCommentList = false" class="full-btn" variant="outline-primary">Posts</b-button>
     </b-col>
@@ -19,7 +19,7 @@
 
         <!--Show all comments-->
         <div v-show="showCommentList" class="comments" v-for="comment in comments" v-bind:key="comment.id">
-            <b-row style="margin-bottom:-.5em;">
+            <b-row>
                 <b-col cols="12">
                     <h5>{{getPostTitleById(comment.postid)}}</h5>
                 </b-col>
@@ -27,7 +27,11 @@
             <b-row>
                 <b-col cols="12" class="my-auto">
                     <p>{{comment.content}}</p>
-                    <b-btn class="full-btn" variant="primary" size="sm" href="#">View post<span class="badge badge-info ml-2">231</span></b-btn>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="5" offset="1">
+                    <b-btn class="full-btn" variant="secondary" size="sm" href="#">View post<span class="badge badge-light ml-2">231</span></b-btn>
                 </b-col>
             </b-row> 
             <hr>     
@@ -35,9 +39,9 @@
 
         <!--Show all posts-->
         <div v-show="showCommentList == false" class="posts" v-for="post in posts" v-bind:key="post.id">
-            <b-row style="margin-bottom:-.5em;">
+            <b-row>
                 <b-col cols="12">
-                    <h5>{{post.title}}</h5>
+                    <h5 style="color: cornflowerblue;">{{post.title}}</h5>
                 </b-col>
             </b-row>
             <b-row>
@@ -47,7 +51,7 @@
             </b-row>
             <b-row>
                 <b-col cols="5" offset="1">
-                    <b-btn class="full-btn" variant="primary" size="sm" href="#">View post<span class="badge badge-info ml-2">231</span></b-btn>
+                    <b-btn class="full-btn" variant="primary" size="sm" href="#">View post<span class="badge badge-success ml-2">231</span></b-btn>
                 </b-col>
             </b-row>
             <hr>     
