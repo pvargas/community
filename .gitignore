@@ -10,6 +10,7 @@ config.py
 
 /.vscode
 
+/API/api_env/
 /API/api_env
 
 /API/__pycache__
