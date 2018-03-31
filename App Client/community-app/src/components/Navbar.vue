@@ -45,13 +45,14 @@ export default {
     name: 'navigator',
     data: function(){
       return {
+        //pretty sure I DON'T need this
         searchExpand: false
       }
     },
     methods: {
       search: function(e) {
         e.preventDefault()
-        searchExpand = true
+        searchExpand = true //nor this
         //TODO: add functionality for searching website
       }
     },

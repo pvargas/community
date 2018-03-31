@@ -16,6 +16,7 @@ import UserPage from './components/UserPage.vue'
 Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(BootstrapVue)
+Vue.http.options.xhr = {withCredentials: true}
 Vue.config.productionTip = false
 
 const routes = [
