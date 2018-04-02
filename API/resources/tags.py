@@ -37,7 +37,7 @@ class TagList(Resource):
                     else:
                         tag_id = models.Tag.insert(name=name).execute()
                         query = models.Tag.get(models.Tag.id == tag_id)
-                        tag_schema = models.TagSchema()
+                        tag_schema = models.UserSchema()
                         output = tag_schema.dump(query).data
                         return jsonify({'tag': output})
                 else:

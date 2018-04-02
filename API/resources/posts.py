@@ -1,5 +1,3 @@
-import models
-
 import json
 
 from flask import Blueprint, jsonify, g
@@ -9,6 +7,8 @@ from playhouse.shortcuts import dict_to_model, model_to_dict
 from webargs import fields
 from webargs.flaskparser import use_args
 
+import models
+
 from auth import auth
 
 
@@ -16,28 +16,36 @@ posts_api = Blueprint('resources.posts', __name__)
 api = Api(posts_api)
 
 def insert_tags(tags, post_id):
+    print()
     for i in tags:
         print(i["name"])
         if not models.Tag.select().where(models.Tag.name == i["name"].lower()).exists():
+            print("insert^tags log 1")
             tag = models.Tag.create_tag(i["name"].lower())
+            print("insert^tags log 2")
             models.PostTags.create_relationship(post_id, tag.id)
         else: 
+            print("insert^tags log 3")
             tag = models.Tag.get(models.Tag.name == i["name"].lower())
-            models.PostTags.create_relationship(post_id, tag.id)
-
+            print("insert^tags log 4")
+            print("tag^id =",tag.id)
+            #models.PostTags.create_relationship(post_id, tag.id)
+            models.PostTags.insert(post_id=post_id, tag_id=tag.id).execute()
+            print("last log line")
 
 
 
 class PostList(Resource):
     
     def get(self):
-        try:
+        try:            
             query = models.Post.select().order_by(models.Post.id)
             post_schema = models.PostSchema(many=True)
             output = post_schema.dump(query).data
             return jsonify({'posts': output})
         except:
-            pass
+            abort(500, message="Oh, no! The Community is in turmoil!")
+            
     
     @auth.login_required
     def post(self):
@@ -58,17 +66,20 @@ class PostList(Resource):
                                                        models.Post.author == author.id)
                     
                     if query.exists():
-                        print('log 2')
+                        
                         return jsonify({'error': {'message': 'Duplicate entry.'}})
                     else:
-                        print('log 3')
+                        print('log 2')
                         post_id = models.Post.insert(title=title, is_url=is_url, author=author, content=content).execute()
-                        '''
+                        print('log 3')
+                        print("*post id =",post_id)
                         insert_tags(tags, post_id)
-                        print('log 4')'''
-
-                        query = models.Post.get(models.Post.id == post_id)
+                        print('log 4')
+                        postid = int(post_id)
+                        query = models.Post.get(models.Post.id == postid)
                         post_schema = models.PostSchema()
+
+                        print('log 6')
                         output = post_schema.dump(query).data
                         
                         return jsonify({'post': output})               

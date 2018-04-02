@@ -42,7 +42,7 @@ const routes = [
         name: 'users'
     },
     {
-        path: '/users/:userid',
+        path: '/users/:userName',
         name: 'user',
         component: UserPage
     }

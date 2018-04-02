@@ -1,6 +1,7 @@
 import time, datetime
 
 from flask import Flask, jsonify, g
+import flask_cors
 
 import models
 from config import App as config
@@ -12,11 +13,12 @@ from resources.comments import comments_api
 
 start_time = time.time()
 
-app = Flask(__name__)
-app.register_blueprint(users_api, url_prefix=config.URL_PREFIX)
-app.register_blueprint(posts_api, url_prefix=config.URL_PREFIX)
-app.register_blueprint(tags_api, url_prefix=config.URL_PREFIX)
-app.register_blueprint(comments_api, url_prefix=config.URL_PREFIX)
+application = Flask(__name__)
+flask_cors.CORS(application)
+application.register_blueprint(users_api, url_prefix=config.URL_PREFIX)
+application.register_blueprint(posts_api, url_prefix=config.URL_PREFIX)
+application.register_blueprint(tags_api, url_prefix=config.URL_PREFIX)
+application.register_blueprint(comments_api, url_prefix=config.URL_PREFIX)
 
 
 def up_time(seconds):
@@ -26,15 +28,15 @@ def up_time(seconds):
     return "%d:%02d:%02d" % (h, m, s)
 
 
-@app.route('/api')
+@application.route('/api')
 def info():
     return jsonify({'Community API':{'Version':config.API_VERSION,'Up Time': up_time(start_time)}})  
     
-@app.route('/')
+@application.route('/')
 def root():
     return '️✌👌💩👌✌️'
 
 
 if __name__ == '__main__':
     models.initialize()
-    app.run(debug=config.DEBUG)
+    application.run(debug=config.DEBUG)

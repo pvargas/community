@@ -56,7 +56,7 @@ class Post(Model):
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
     last_modified = DateTimeField(
-        constraints=[SQL('ON UPDATE CURRENT_TIMESTAMP')])
+        constraints=[SQL('DEFUALT NULL ON UPDATE CURRENT_TIMESTAMP')])
 
     class Meta:
         database = DATABASE
@@ -98,12 +98,19 @@ class PostTags(Model):
     tag_id = ForeignKeyField(Tag)
 
     @classmethod
-    def create_relationship(cls, post_id, tag_id, **kwargs):
+    def create_relationship(cls, post_id, tag_id):
         try:
-            cls.select().where(cls.post_id==post_id&cls.tag_id==tag_id).get()
+            print("models.py log 1")
+            cls.select().where(
+                (cls.post_id==post_id)&(cls.tag_id==tag_id)
+                ).get()
+            print("models.py log 1.5")
         except cls.DoesNotExist:
+            print("models.py log 2")
             relationship = cls(post_id=post_id, tag_id=tag_id)
+            print("models.py log 3")
             relationship.save()
+            print("models.py log 4")
             return relationship
         else:
             raise Exception("post-tag relationship already exists.")
@@ -121,7 +128,7 @@ class Comment(Model):
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
     last_modified = DateTimeField(
-        constraints=[SQL('ON UPDATE CURRENT_TIMESTAMP')],null=True)
+        constraints=[SQL('DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP')],null=True)
 
     class Meta:
         database = DATABASE
@@ -187,8 +194,9 @@ def initialize():
                             CommentVotes, PostTags], safe=True)
     migrate(
         # Make `posts` allow NULL values.
-        #migrator.drop_not_null('post', 'last_modified')
-        #migrator.add_column('user', 'email', User.email),
-        #migrator.add_column('user', 'password', User.password),
+        # migrator.drop_not_null('post', 'last_modified')
+        # migrator.drop_not_null('comment', 'last_modified')
+        # migrator.add_column('user', 'email', User.email),
+        # migrator.add_column('user', 'password', User.password),
     )
     DATABASE.close()

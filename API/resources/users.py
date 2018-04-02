@@ -23,7 +23,7 @@ class UserList(Resource):
             output = user_schema.dump(query).data
             return jsonify({'users': output})
         except:
-            pass
+            abort(500, message="Oh, no! The Community is in turmoil!")
 
     def post(self):
         if(request.is_json):          
@@ -39,8 +39,7 @@ class UserList(Resource):
                 if query.exists():
                     return jsonify({"error":{'message':'Username or email already exist.'}})
 
-                else:     
-                    print("log2")               
+                else:                   
                     user = models.User.create_user(name, email, password)
 
                     query = models.User.get(models.User.id == user.id)
@@ -64,7 +63,7 @@ class User(Resource):
             return jsonify({'user': output})
             
         except models.DoesNotExist:
-            return jsonify({'error': {'message': 'record does not exist.'}})
+            abort(404, message="Not part of this community.")
 
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')

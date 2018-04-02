@@ -38,7 +38,8 @@ export default {
         }
     },
     created: function() {
-        this.$http.get('http://127.0.0.1:5000/api/v1/users/user1')
+        var theUrl = 'http://127.0.0.1:5000/api/v1/users/' + this.$route.params.userName
+        this.$http.get(theUrl)
             .then(function(response){
                 if(response.status == "200"){
                     let temp = response.data
