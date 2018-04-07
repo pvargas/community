@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
-    <Navbar></Navbar>
-    <b-container>
-      <router-view></router-view>
-    </b-container>
-  </div>
+    <div id="app">
+        <b-container>
+            <Navbar></Navbar>
+            <router-view></router-view>
+        </b-container>
+    </div>
 </template>
 
 <script>
@@ -30,4 +30,5 @@ body {
   bottom: 0;
   line-height: 50px;
 }
+
 </style>
