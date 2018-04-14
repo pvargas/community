@@ -35,8 +35,7 @@ export default {
 
     created: function() {
         //actual endpoint http://community.io/api/v1/posts  
-        this.$http.get('https://jsonplaceholder.typicode.com/posts')
-            .then(function(response){
+        this.$http.get('https://jsonplaceholder.typicode.com/posts').then(function(response){
                 if(response.status == "200"){
                     let list = response.data
                     for (var i = 0; i < list.length; i++){
