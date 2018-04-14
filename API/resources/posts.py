@@ -81,7 +81,7 @@ class PostList(Resource):
 
                         print('log 6')
                         output = post_schema.dump(query).data
-                        
+                        print('log 7')
                         return jsonify({'post': output})               
                 else:
                     return jsonify({'error': {'message': 'missing required field(s).'}})
@@ -97,8 +97,9 @@ class Post(Resource):
             post_schema = models.PostSchema()
             output = post_schema.dump(query).data
             return jsonify({'post': output})
+
         except models.DoesNotExist:
-            return jsonify({'error': {'message': 'record does not exist.'}})
+            abort(404, message="Record does not exist.")
 
 
 api.add_resource(PostList, '/posts', endpoint='posts')

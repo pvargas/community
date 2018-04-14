@@ -21,7 +21,7 @@ class CommentList(Resource):
             output = comment_schema.dump(query).data
             return jsonify({'comments': output})
         except:
-            pass
+            abort(500, message="Oh, no! The Community is in turmoil!")
 
     def post(self):
         try:

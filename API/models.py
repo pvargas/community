@@ -52,11 +52,10 @@ class Post(Model):
     id = PrimaryKeyField(primary_key=True)
     author = ForeignKeyField(User)
     title = CharField(300)
-    is_url = BooleanField()
+    is_url = BooleanField(constraints=[SQL('DEFAULT FALSE')])
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
-    last_modified = DateTimeField(
-        constraints=[SQL('DEFUALT NULL ON UPDATE CURRENT_TIMESTAMP')])
+    last_modified = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')])
 
     class Meta:
         database = DATABASE
@@ -128,7 +127,7 @@ class Comment(Model):
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
     last_modified = DateTimeField(
-        constraints=[SQL('DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP')],null=True)
+        constraints=[SQL('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')])
 
     class Meta:
         database = DATABASE
@@ -194,7 +193,7 @@ def initialize():
                             CommentVotes, PostTags], safe=True)
     migrate(
         # Make `posts` allow NULL values.
-        # migrator.drop_not_null('post', 'last_modified')
+        # migrator.drop_not_null('post', 'last_modified'),
         # migrator.drop_not_null('comment', 'last_modified')
         # migrator.add_column('user', 'email', User.email),
         # migrator.add_column('user', 'password', User.password),

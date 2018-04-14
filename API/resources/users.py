@@ -63,7 +63,7 @@ class User(Resource):
             return jsonify({'user': output})
             
         except models.DoesNotExist:
-            abort(404, message="Not part of this community.")
+            abort(404, message="Record does not exist.")
 
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')
