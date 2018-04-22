@@ -2,8 +2,8 @@ import models
 
 import json
 
-from flask import Blueprint, jsonify, abort
-from flask_restful import Api, Resource, marshal, marshal_with, request
+from flask import Blueprint, jsonify
+from flask_restful import Api, Resource, marshal, marshal_with, request, abort
 from flask_marshmallow import Marshmallow
 from playhouse.shortcuts import dict_to_model, model_to_dict
 from webargs import fields
@@ -16,12 +16,14 @@ api = Api(comments_api)
 class CommentList(Resource):
     def get(self):
         try:
-            query = models.Comment.select().order_by(models.Comment.id)
+            query = models.Comment.select().order_by(models.Comment.id)            
+            #query = models.Comment.select().join(models.User)
             comment_schema = models.CommentSchema(many=True)
             output = comment_schema.dump(query).data
+            
             return jsonify({'comments': output})
         except:
-            pass
+            abort(500, message="Oh, no! The Community is in turmoil!")
 
     def post(self):
         try:

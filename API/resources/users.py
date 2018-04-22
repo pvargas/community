@@ -23,7 +23,7 @@ class UserList(Resource):
             output = user_schema.dump(query).data
             return jsonify({'users': output})
         except:
-            pass
+            abort(500, message="Oh, no! The Community is in turmoil!")
 
     def post(self):
         if(request.is_json):          
@@ -32,21 +32,21 @@ class UserList(Resource):
                 name = data['name']
                 email = data['email']
                 password = data['password']
+
+                # hi                
+                query = models.User.select().where((models.User.name == name) | (models.User.email == email))
                 
-                user = models.User.create_user(name, email, password)
-
-                '''                
-                query = models.User.select().where(models.User.name == name)
-
                 if query.exists():
-                    return jsonify({"error":{'message':'Username already exists'}})
-                else:
-                    user_id = models.User.insert(name=name, email=email).execute()
-                    query = models.User.get(models.User.id == user_id)
+                    return jsonify({"error":{'message':'Username or email already exist.'}})
+
+                else:                   
+                    user = models.User.create_user(name, email, password)
+
+                    query = models.User.get(models.User.id == user.id)
                     user_schema = models.UserSchema()
                     output = user_schema.dump(query).data
                     return jsonify({'user': output})
-                '''
+                
 
                 return jsonify(user)
             else:
@@ -63,7 +63,7 @@ class User(Resource):
             return jsonify({'user': output})
             
         except models.DoesNotExist:
-            return jsonify({'error': {'message': 'record does not exist.'}})
+            abort(404, message="Record does not exist.")
 
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')

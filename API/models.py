@@ -1,7 +1,7 @@
 import datetime
 
 from peewee import *
-from marshmallow_peewee import ModelSchema
+from marshmallow_peewee import ModelSchema, Related
 from playhouse.migrate import *
 
 from passlib.hash import sha256_crypt
@@ -50,13 +50,12 @@ class User(Model):
 
 class Post(Model):
     id = PrimaryKeyField(primary_key=True)
-    author = ForeignKeyField(User)
+    author = ForeignKeyField(User, backref='posts')
     title = CharField(300)
-    is_url = BooleanField()
+    is_url = BooleanField(constraints=[SQL('DEFAULT FALSE')])
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
-    last_modified = DateTimeField(
-        constraints=[SQL('ON UPDATE CURRENT_TIMESTAMP')])
+    last_modified = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')])
 
     class Meta:
         database = DATABASE
@@ -98,12 +97,19 @@ class PostTags(Model):
     tag_id = ForeignKeyField(Tag)
 
     @classmethod
-    def create_relationship(cls, post_id, tag_id, **kwargs):
+    def create_relationship(cls, post_id, tag_id):
         try:
-            cls.select().where(cls.post_id==post_id&cls.tag_id==tag_id).get()
+            print("models.py log 1")
+            cls.select().where(
+                (cls.post_id==post_id)&(cls.tag_id==tag_id)
+                ).get()
+            print("models.py log 1.5")
         except cls.DoesNotExist:
+            print("models.py log 2")
             relationship = cls(post_id=post_id, tag_id=tag_id)
+            print("models.py log 3")
             relationship.save()
+            print("models.py log 4")
             return relationship
         else:
             raise Exception("post-tag relationship already exists.")
@@ -115,13 +121,13 @@ class PostTags(Model):
 
 class Comment(Model):
     id = PrimaryKeyField(primary_key=True)
-    parent = ForeignKeyField('self', related_name='children', null=True)
-    author = ForeignKeyField(User)
-    post = ForeignKeyField(Post)
+    parent = ForeignKeyField('self', related_name='children', backref='comments', null=True )
+    author = ForeignKeyField(User,backref='posts')
+    post = ForeignKeyField(Post, backref='replies')
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
     last_modified = DateTimeField(
-        constraints=[SQL('ON UPDATE CURRENT_TIMESTAMP')],null=True)
+        constraints=[SQL('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')])
 
     class Meta:
         database = DATABASE
@@ -147,6 +153,8 @@ class UserSchema(ModelSchema):
 
 class PostSchema(ModelSchema):
 
+    author = Related()
+
     class Meta:
         model = Post
 
@@ -170,6 +178,9 @@ class PostTagsSchema(ModelSchema):
 
 
 class CommentSchema(ModelSchema):
+    #parent = Related()
+    author = Related()
+    post = Related()
 
     class Meta:
         model = Comment
@@ -187,8 +198,9 @@ def initialize():
                             CommentVotes, PostTags], safe=True)
     migrate(
         # Make `posts` allow NULL values.
-        # migrator.drop_not_null('post', 'last_modified')
-        #migrator.add_column('user', 'email', User.email),
-        #migrator.add_column('user', 'password', User.password),
+        # migrator.drop_not_null('post', 'last_modified'),
+        # migrator.drop_not_null('comment', 'last_modified')
+        # migrator.add_column('user', 'email', User.email),
+        # migrator.add_column('user', 'password', User.password),
     )
     DATABASE.close()
