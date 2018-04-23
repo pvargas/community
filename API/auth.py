@@ -7,7 +7,7 @@ import models
 
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth(scheme='Token')
-auth = MultiAuth(basic_auth)
+auth = MultiAuth(token_auth, basic_auth)
 
 @basic_auth.verify_password
 def verify_password(email_or_username, password):

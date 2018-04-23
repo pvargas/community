@@ -6,7 +6,10 @@ from playhouse.migrate import *
 
 from passlib.hash import sha256_crypt
 
-from config import Database as config
+from config import Database as config, App as app
+
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, 
+BadSignature, SignatureExpired)
 
 DATABASE = MySQLDatabase(config.DB, host=config.HOST,
                          port=config.PORT, user=config.USER, password=config.PAS)
@@ -28,7 +31,11 @@ class User(Model):
     
     @classmethod
     def create_user(cls, name, email, password, **kwargs):
-        email = email.lower()
+        email = email.lower()        
+
+        if (name == email) or (not name.isalnum()):            
+            raise Exception("Invalid input")
+
         try:
             cls.select().where(
                 (cls.email==email)|(cls.name**name)      
@@ -41,12 +48,28 @@ class User(Model):
         else:
             raise Exception("Username or email already exist.")
 
+
+    @staticmethod
+    def verify_auth_token(token):
+        serializer = Serializer(app.SECRET)
+        try:
+            data = serializer.loads(token)
+        except(SignatureExpired, BadSignature):
+            return None
+        else:
+            user = User.get(User.id==data['id'])
+            return user
+
     @staticmethod
     def set_password(password):       
         return sha256_crypt.encrypt(password)
 
     def verify_password(self, password):
         return sha256_crypt.verify(password, self.password)
+    
+    def generate_auth_token(self, expires=3600*12):
+        serializer = Serializer(app.SECRET, expires_in=expires)
+        return serializer.dumps({'id':self.id})
 
 class Post(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -121,9 +144,12 @@ class PostTags(Model):
 
 class Comment(Model):
     id = PrimaryKeyField(primary_key=True)
-    parent = ForeignKeyField('self', related_name='children', backref='comments', null=True )
-    author = ForeignKeyField(User,backref='posts')
-    post = ForeignKeyField(Post, backref='replies')
+    #parent = ForeignKeyField('self', related_name='children', backref='comments', null=True )
+
+    parent = IntegerField(null=True)
+
+    author = ForeignKeyField(User, backref='posts')
+    post = ForeignKeyField(Post, backref='comments')
     content = TextField()
     created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
     last_modified = DateTimeField(
@@ -180,7 +206,7 @@ class PostTagsSchema(ModelSchema):
 class CommentSchema(ModelSchema):
     #parent = Related()
     author = Related()
-    post = Related()
+    #post = Related()
 
     class Meta:
         model = Comment

@@ -1,15 +1,16 @@
-import time, datetime
+import datetime
+import time
 
-from flask import Flask, jsonify, g
+from flask import Flask, g, jsonify
+
 import flask_cors
-
 import models
+from auth import auth
 from config import App as config
-from resources.posts import posts_api
-from resources.users import users_api
-from resources.tags import tags_api
 from resources.comments import comments_api
-
+from resources.posts import posts_api
+from resources.tags import tags_api
+from resources.users import users_api
 
 start_time = time.time()
 
@@ -34,7 +35,13 @@ def info():
     
 @application.route('/')
 def root():
-    return '️✌👌💩👌✌️'
+    return '️👌👌👌🔥🔥🔥💯💯💯️'
+
+@application.route(config.URL_PREFIX+'/users/login', methods=['GET'])
+@auth.login_required
+def get_auth_token():
+    token = g.user.generate_auth_token()
+    return jsonify({'token':token.decode('ascii')})
 
 
 if __name__ == '__main__':
