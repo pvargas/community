@@ -5,6 +5,7 @@ from marshmallow_peewee import ModelSchema, Related
 from playhouse.migrate import *
 
 from passlib.hash import sha256_crypt
+from passlib import pwd
 
 from config import Database as config, App as app
 
@@ -51,7 +52,9 @@ class User(Model):
 
     @staticmethod
     def verify_auth_token(token):
-        serializer = Serializer(app.SECRET)
+        #serializer = Serializer(app.SECRET)
+        serializer = Serializer(pwd.genword(entropy=56, charset="ascii_72", length=59))
+        
         try:
             data = serializer.loads(token)
         except(SignatureExpired, BadSignature):
@@ -68,7 +71,9 @@ class User(Model):
         return sha256_crypt.verify(password, self.password)
     
     def generate_auth_token(self, expires=3600*12):
-        serializer = Serializer(app.SECRET, expires_in=expires)
+        #serializer = Serializer(app.SECRET, expires_in=expires)
+        serializer = Serializer(pwd.genword(entropy=56, charset="ascii_72", length=59), expires_in=expires)
+        
         return serializer.dumps({'id':self.id})
 
 class Post(Model):

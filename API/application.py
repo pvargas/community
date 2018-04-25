@@ -3,6 +3,9 @@ import time
 
 from flask import Flask, g, jsonify
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_ipaddr
+
 import flask_cors
 import models
 from auth import auth
@@ -28,6 +31,8 @@ def up_time(seconds):
     h, m = divmod(m, 60)
     return "%d:%02d:%02d" % (h, m, s)
 
+limiter = Limiter(application, global_limits=['7200/hour'], key_func=get_ipaddr)
+#limiter.exempt(users)
 
 @application.route('/api')
 def info():

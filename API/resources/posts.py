@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, jsonify, g
+from flask import Blueprint, jsonify, g, Response
 from flask_restful import Api, Resource, marshal, marshal_with, request, abort
 from flask_marshmallow import Marshmallow
 from playhouse.shortcuts import dict_to_model, model_to_dict
@@ -100,6 +100,33 @@ class Post(Resource):
 
         except models.DoesNotExist:
             abort(404, message="Record does not exist.")
+    
+    #@auth.login_required
+    def put(self, id):
+        try:
+            data = request.get_json(force=True)
+            if ('title' in data and 'content' in data and 
+                'is_url' in data and 'author' in data):
+                
+                title = data['title']
+                content = data['content']
+
+            query = models.Post.update(title=title, content=content).where(models.Post.id == id)
+            query.execute()
+
+            return Response(status=200, mimetype='application/json')
+
+        except models.DoesNotExist:
+            abort(404, message="Record does not exist.")
+
+    #@auth.login_required
+    def delete(self, id):
+        query = models.Post.delete().where(models.Post.id == id)
+        query.execute()
+
+        return Response(status=204, mimetype='application/json')
+
+
 
 
 api.add_resource(PostList, '/posts', endpoint='posts')
