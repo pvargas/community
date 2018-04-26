@@ -15,6 +15,7 @@ from auth import auth
 posts_api = Blueprint('resources.posts', __name__)
 api = Api(posts_api)
 
+
 def insert_tags(tags, post_id):
     print()
     for i in tags:
@@ -24,71 +25,81 @@ def insert_tags(tags, post_id):
             tag = models.Tag.create_tag(i["name"].lower())
             print("insert^tags log 2")
             models.PostTags.create_relationship(post_id, tag.id)
-        else: 
+        else:
             print("insert^tags log 3")
             tag = models.Tag.get(models.Tag.name == i["name"].lower())
             print("insert^tags log 4")
-            print("tag^id =",tag.id)
+            print("tag^id =", tag.id)
             #models.PostTags.create_relationship(post_id, tag.id)
             models.PostTags.insert(post_id=post_id, tag_id=tag.id).execute()
             print("last log line")
 
 
-
 class PostList(Resource):
-    
+
     def get(self):
-        try:            
+        try:
             query = models.Post.select().order_by(models.Post.id)
             post_schema = models.PostSchema(many=True)
             output = post_schema.dump(query).data
             return jsonify({'posts': output})
         except:
             abort(500, message="Oh, no! The Community is in turmoil!")
-            
-    
+
     @auth.login_required
     def post(self):
-            if(request.is_json):
-                
-                data = request.get_json(force=True)
-                if ('title' in data and 'content' in data and 
+        print('it got here 1')
+        if(request.is_json):
+            print('it got here 2')
+            data = request.get_json(force=True)
+            if ('title' in data and 'content' in data and
                     'is_url' in data and 'author' in data and 'tags' in data):
-                   
-                    title = data['title']
-                    is_url = data['is_url']
-                    name = data['author']
-                    content = data['content']
-                    tags = data['tags']
 
-                    author = models.User.get(models.User.name == name)
-                    query = models.Post.select().where(models.Post.title == title, models.Post.content == content,
-                                                       models.Post.author == author.id)
-                    
-                    if query.exists():
-                        
-                        return jsonify({'error': {'message': 'Duplicate entry.'}})
-                    else:
-                        print('log 2')
-                        post_id = models.Post.insert(title=title, is_url=is_url, author=author, content=content).execute()
-                        print('log 3')
-                        print("*post id =",post_id)
-                        insert_tags(tags, post_id)
-                        print('log 4')
-                        postid = int(post_id)
-                        query = models.Post.get(models.Post.id == postid)
-                        post_schema = models.PostSchema()
+                title = data['title']
+                is_url = data['is_url']
+                name = data['author']
+                content = data['content']
+                tags = data['tags']                       
 
-                        print('log 6')
-                        output = post_schema.dump(query).data
-                        print('log 7')
-                        return jsonify({'post': output})               
+                author = models.User.get(models.User.name == name)
+                print(g.user)
+                print(author)
+                print(name)  
+                
+                if g.user != author:
+                    print("user is different")
+                    abort(401)
+
+                print("user is NOT different")
+
+                query = models.Post.select().where(models.Post.title == title, models.Post.content == content,
+                                                   models.Post.author == author.id)
+
+                if query.exists():
+                    print('duplicate')
+                    abort(400, message="Duplicate entry.")
+
                 else:
-                    return jsonify({'error': {'message': 'missing required field(s).'}})
+                    print('log 2')
+                    post_id = models.Post.insert(
+                        title=title, is_url=is_url, author=author, content=content).execute()
+                    print('log 3')
+                    print("*post id =", post_id)
+                    insert_tags(tags, post_id)
+                    print('log 4')
+                    postid = int(post_id)
+                    query = models.Post.get(models.Post.id == postid)
+                    post_schema = models.PostSchema()
+
+                    print('log 6')
+                    output = post_schema.dump(query).data
+                    print('log 7')
+                    return jsonify({'post': output})
             else:
-                abort(400)
-        
-    
+                return jsonify({'error': {'message': 'missing required field(s).'}})
+        else:
+            abort(400, message='Not JSON data')
+
 
 class Post(Resource):
     def get(self, id):
@@ -100,18 +111,19 @@ class Post(Resource):
 
         except models.DoesNotExist:
             abort(404, message="Record does not exist.")
-    
+
     #@auth.login_required
     def put(self, id):
         try:
             data = request.get_json(force=True)
-            if ('title' in data and 'content' in data and 
-                'is_url' in data and 'author' in data):
-                
+            if ('title' in data and 'content' in data and
+                    'is_url' in data and 'author' in data):
+
                 title = data['title']
                 content = data['content']
 
-            query = models.Post.update(title=title, content=content).where(models.Post.id == id)
+            query = models.Post.update(
+                title=title, content=content).where(models.Post.id == id)
             query.execute()
 
             return Response(status=200, mimetype='application/json')
@@ -125,8 +137,6 @@ class Post(Resource):
         query.execute()
 
         return Response(status=204, mimetype='application/json')
-
-
 
 
 api.add_resource(PostList, '/posts', endpoint='posts')

@@ -33,7 +33,7 @@ class UserList(Resource):
                 email = data['email']
                 password = data['password']
 
-                # hi                
+                                
                 query = models.User.select().where((models.User.name == name) | (models.User.email == email))
                 
                 if query.exists():
