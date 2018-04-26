@@ -7,8 +7,6 @@ class Database:
     USER = 'Pablodb'
     PAS  = '|H0rizon3.14X|'
 
-
-
 class App:
     API_VERSION = 1
     URL_PREFIX = '/api/v' + str(API_VERSION)

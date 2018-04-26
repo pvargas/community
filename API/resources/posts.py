@@ -24,7 +24,8 @@ def insert_tags(tags, post_id):
             print("insert^tags log 1")
             tag = models.Tag.create_tag(i["name"].lower())
             print("insert^tags log 2")
-            models.PostTags.create_relationship(post_id, tag.id)
+            #models.PostTags.create_relationship(post_id, tag.id)
+            models.PostTags.insert(post_id=post_id, tag_id=tag.id).execute()
         else:
             print("insert^tags log 3")
             tag = models.Tag.get(models.Tag.name == i["name"].lower())
