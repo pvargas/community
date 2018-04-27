@@ -48,6 +48,11 @@ def get_auth_token():
     token = g.user.generate_auth_token()
     return jsonify({'token':token.decode('ascii')})
 
+@application.route(config.URL_PREFIX+'/account/logout', methods=['GET'])
+@auth.login_required
+def revoke_token():
+    token = g.user.generate_auth_token()
+    return jsonify({'token':token.decode('ascii')})
 
 if __name__ == '__main__':
     models.initialize()
