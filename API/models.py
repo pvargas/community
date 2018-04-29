@@ -75,6 +75,13 @@ class User(Model):
         #serializer = Serializer(pwd.genword(entropy=56, charset="ascii_72", length=59), expires_in=expires)
         
         return serializer.dumps({'id':self.id})
+    
+    def expire_token(self, expires=3600*12):
+        serializer = Serializer(app.SECRET)
+        #serializer = Serializer(pwd.genword(entropy=56, charset="ascii_72", length=59), expires_in=expires)
+        
+        serializer.loads({'id':self.id})
+        
 
 class Post(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -90,13 +97,13 @@ class Post(Model):
 
 
 class PostVotes(Model):
-    post_id = ForeignKeyField(Post)
-    user_id = ForeignKeyField(User)
+    post = ForeignKeyField(Post, on_delete='CASCADE')
+    voter = ForeignKeyField(User, on_delete='CASCADE')
     value = SmallIntegerField()
 
     class Meta:
         database = DATABASE
-        primary_key = CompositeKey('post_id', 'user_id')
+        primary_key = CompositeKey('post', 'voter')
 
 
 class Tag(Model):
@@ -121,8 +128,8 @@ class Tag(Model):
 
 
 class PostTags(Model):
-    post_id = ForeignKeyField(Post)
-    tag_id = ForeignKeyField(Tag)
+    post = ForeignKeyField(Post, on_delete='CASCADE')
+    tag = ForeignKeyField(Tag, on_delete='CASCADE')
 
     @classmethod
     def create_relationship(cls, post_id, tag_id):
@@ -144,15 +151,12 @@ class PostTags(Model):
 
     class Meta:
         database = DATABASE
-        primary_key = CompositeKey('post_id', 'tag_id')
+        primary_key = CompositeKey('post', 'tag')
 
 
 class Comment(Model):
     id = PrimaryKeyField(primary_key=True)
-    #parent = ForeignKeyField('self', related_name='children', backref='comments', null=True )
-
-    parent = IntegerField(null=True)
-
+    parent = ForeignKeyField('self', related_name='children', backref='comments', null=True)
     author = ForeignKeyField(User, backref='posts')
     post = ForeignKeyField(Post, backref='comments')
     content = TextField()
@@ -165,13 +169,13 @@ class Comment(Model):
 
 
 class CommentVotes(Model):
-    comment_id = ForeignKeyField(Comment)
-    user_id = ForeignKeyField(User)
+    comment = ForeignKeyField(Comment, on_delete='CASCADE')
+    voter = ForeignKeyField(User)
     value = SmallIntegerField()
 
     class Meta:
         database = DATABASE
-        primary_key = CompositeKey('comment_id', 'user_id')
+        primary_key = CompositeKey('comment', 'voter')
 
 
 ### Schemas for all the above models
@@ -209,9 +213,9 @@ class PostTagsSchema(ModelSchema):
 
 
 class CommentSchema(ModelSchema):
-    #parent = Related()
+    parent = Related()
     author = Related()
-    #post = Related()
+    post = Related()
 
     class Meta:
         model = Comment

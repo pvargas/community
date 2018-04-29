@@ -18,8 +18,8 @@ api = Api(users_api)
 class UserList(Resource):
     def get(self):
         try:
-            query = models.User.select(models.User.name, models.User.id, models.User.member_since).order_by(models.User.id)
-            user_schema = models.UserSchema(many=True)
+            query = models.User.select().order_by(models.User.id)
+            user_schema = models.UserSchema(many=True, only=('name','id','member_since', 'is_moderator'))
             output = user_schema.dump(query).data
             return jsonify({'users': output})
         except:
@@ -43,7 +43,7 @@ class UserList(Resource):
                     user = models.User.create_user(name, email, password)
 
                     query = models.User.get(models.User.id == user.id)
-                    user_schema = models.UserSchema()
+                    user_schema = models.UserSchema(only=('name','id','member_since', 'is_moderator'))
                     output = user_schema.dump(query).data
                     return jsonify({'user': output})
                 
@@ -56,20 +56,16 @@ class UserList(Resource):
 
 class User(Resource):
     def get(self, name):
-        try:
-            
-            query = models.User.select(models.User.name, models.User.id, models.User.member_since).where(
-             (models.User.name == name)).get()
 
-            if not query:
-                abort(422, message='Username or email already exist.')
+        try:            
+            query = models.User.get(models.User.name == name)
 
-            user_schema = models.UserSchema()
+            user_schema = models.UserSchema(only=('name','id','member_since', 'is_moderator'))
             output = user_schema.dump(query).data
             return jsonify({'user': output})
             
         except :
-            abort(500, message="Oh, no! The Community is in turmoil!")
+            abort(404, message="Record does not exist.")
 
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')

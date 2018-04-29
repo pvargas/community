@@ -41,8 +41,11 @@ class PostList(Resource):
     def get(self):
         try:
             query = models.Post.select().order_by(models.Post.id)
-            post_schema = models.PostSchema(many=True)
+            post_schema = models.PostSchema(many=True, 
+            only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
+            'created_at', 'last_modified'))
             output = post_schema.dump(query).data
+
             return jsonify({'posts': output})
         except:
             abort(500, message="Oh, no! The Community is in turmoil!")
@@ -90,7 +93,8 @@ class PostList(Resource):
                     print('log 4')
                     postid = int(post_id)
                     query = models.Post.get(models.Post.id == postid)
-                    post_schema = models.PostSchema()
+                    post_schema = models.PostSchema(only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
+            'created_at', 'last_modified'))
 
                     print('log 6')
                     output = post_schema.dump(query).data
@@ -106,8 +110,10 @@ class Post(Resource):
     def get(self, id):
         try:
             query = models.Post.get(models.Post.id == id)
-            post_schema = models.PostSchema()
+            post_schema = models.PostSchema(only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
+            'created_at', 'last_modified'))
             output = post_schema.dump(query).data
+            
             return jsonify({'post': output})
 
         except models.DoesNotExist:
@@ -132,11 +138,23 @@ class Post(Resource):
         except models.DoesNotExist:
             abort(404, message="Record does not exist.")
 
-    #@auth.login_required
+    @auth.login_required
     def delete(self, id):
-        query = models.Post.delete().where(models.Post.id == id)
-        query.execute()
+        try:        
+            post = models.Post.select().where(models.Post.id == id).get()
+                
+            if g.user != post.author:
+                print("user is different")
+                abort(401)
 
+            models.PostVotes.delete().where(models.PostVotes.post == id).execute()            
+            models.PostTags.delete().where(models.PostTags.post == id).execute()            
+            models.Comment.delete().where(models.Comment.post == id).execute()            
+            models.Post.delete().where(models.Post.id == id).execute()
+            
+        except:
+            abort(500, message="Oh, no! The Community is in turmoil!")
+        
         return Response(status=204, mimetype='application/json')
 
 
