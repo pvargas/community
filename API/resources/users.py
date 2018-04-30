@@ -67,5 +67,45 @@ class User(Resource):
         except :
             abort(404, message="Record does not exist.")
 
+class UserPosts(Resource):
+    def get(self, name):
+
+        try:
+            user = models.User.get(models.User.name == name)            
+            query = models.Post.select().where(models.Post.author == user.id).order_by(models.Post.id)
+
+            post_schema = models.PostSchema(many=True, 
+            only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
+            'created_at', 'last_modified'))
+
+            output = post_schema.dump(query).data
+
+            info_string = name+"'s posts"
+
+            return jsonify({info_string: output})
+        except:
+            abort(500, message="Oh, no! The Community is in turmoil!")
+
+class UserComments(Resource):
+    def get(self, name):
+
+        try:
+            user = models.User.get(models.User.name == name)            
+            query = models.Comment.select().where(models.Comment.author == user.id).order_by(models.Comment.id)
+
+            comment_schema = models.CommentSchema(many=True, 
+            only=('id', 'content', 'author.name', 'author.id', 
+            'created_at', 'last_modified'))
+
+            output = comment_schema.dump(query).data
+
+            info_string = name+"'s comments"
+
+            return jsonify({info_string: output})
+        except:
+            abort(500, message="Oh, no! The Community is in turmoil!")
+
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')
+api.add_resource(UserPosts, '/users/<name>/posts', endpoint='user_posts')
+api.add_resource(UserComments, '/users/<name>/comments', endpoint='user_comments')

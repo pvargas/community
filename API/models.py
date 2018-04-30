@@ -2,6 +2,7 @@ import datetime
 
 from peewee import *
 from marshmallow_peewee import ModelSchema, Related
+from marshmallow import fields
 from playhouse.migrate import *
 
 from passlib.hash import sha256_crypt
@@ -82,29 +83,7 @@ class User(Model):
         
         serializer.loads({'id':self.id})
         
-
-class Post(Model):
-    id = PrimaryKeyField(primary_key=True)
-    author = ForeignKeyField(User, backref='posts')
-    title = CharField(300)
-    is_url = BooleanField(constraints=[SQL('DEFAULT FALSE')])
-    content = TextField()
-    created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
-    last_modified = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')])
-
-    class Meta:
-        database = DATABASE
-
-
-class PostVotes(Model):
-    post = ForeignKeyField(Post, on_delete='CASCADE')
-    voter = ForeignKeyField(User, on_delete='CASCADE')
-    value = SmallIntegerField()
-
-    class Meta:
-        database = DATABASE
-        primary_key = CompositeKey('post', 'voter')
-
+#PostTags_Proxy = DeferredThroughModel()
 
 class Tag(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -126,6 +105,17 @@ class Tag(Model):
     class Meta:
         database = DATABASE
 
+class Post(Model):
+    id = PrimaryKeyField(primary_key=True)
+    author = ForeignKeyField(User, backref='posts')
+    title = CharField(300)
+    is_url = BooleanField(constraints=[SQL('DEFAULT FALSE')])
+    content = TextField()
+    created_at = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP')])
+    last_modified = DateTimeField(constraints=[SQL('DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')])
+
+    class Meta:
+        database = DATABASE
 
 class PostTags(Model):
     post = ForeignKeyField(Post, on_delete='CASCADE')
@@ -153,6 +143,16 @@ class PostTags(Model):
         database = DATABASE
         primary_key = CompositeKey('post', 'tag')
 
+#PostTags_Proxy.set_model(PostTags)
+
+class PostVotes(Model):
+    post = ForeignKeyField(Post, on_delete='CASCADE')
+    voter = ForeignKeyField(User, on_delete='CASCADE')
+    value = SmallIntegerField()
+
+    class Meta:
+        database = DATABASE
+        primary_key = CompositeKey('post', 'voter')
 
 class Comment(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -186,9 +186,15 @@ class UserSchema(ModelSchema):
     class Meta:
         model = User
 
+class TagSchema(ModelSchema):
+
+    class Meta:
+        model = Tag
+
 class PostSchema(ModelSchema):
 
     author = Related()
+    #tags = fields.Nested(TagSchema, many=True)
 
     class Meta:
         model = Post
@@ -198,13 +204,6 @@ class PostVotesSchema(ModelSchema):
 
     class Meta:
         model = PostVotes
-
-
-class TagSchema(ModelSchema):
-
-    class Meta:
-        model = Tag
-
 
 class PostTagsSchema(ModelSchema):
 

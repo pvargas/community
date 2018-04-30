@@ -1,11 +1,14 @@
 import json
 
 from flask import Blueprint, jsonify, g, Response
-from flask_restful import Api, Resource, marshal, marshal_with, request, abort
+from flask_restful import Api, Resource, request, abort
 from flask_marshmallow import Marshmallow
+from marshmallow import Schema, fields 
 from playhouse.shortcuts import dict_to_model, model_to_dict
 from webargs import fields
 from webargs.flaskparser import use_args
+
+from peewee import JOIN
 
 import models
 
@@ -39,11 +42,37 @@ def insert_tags(tags, post_id):
 class PostList(Resource):
 
     def get(self):
-        try:
+        try:            
+            '''
+            query = (models.Post.select(models.Post, models.Tag).
+            join(models.PostTags).join(models.Tag).order_by(models.Post.id))
+            
+            
+            query = (models.Post.select(models.PostTags, models.Post, models.Tag)
+                .join(models.PostTags, JOIN.LEFT_OUTER)
+                .join(models.Tag, JOIN.LEFT_OUTER)
+                .order_by(models.Post.id))
+        
+            posts = {}
+            last = None
+            for result in query:
+                post_id = result.id
+                if (post_id not in posts):
+                    # creates a new post object matching the post data
+                    posts[post_id] = models.Post(**result.__data__)
+                    posts[post_id].tags = []
+                    try:
+                        # extracts the associated tag
+                        posts[post_id].tags.append(result.PostTags.tag)
+                        #print('tag:', result.PostTags)
+                    except AttributeError:
+                        #print('tag:', result.PostTags.tag)
+                        print('tag:', result.tag)
+                        pass
+            '''
             query = models.Post.select().order_by(models.Post.id)
-            post_schema = models.PostSchema(many=True, 
-            only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
-            'created_at', 'last_modified'))
+            post_schema = models.PostSchema(many=True, exclude=('author.password', 'author.email', 'author.is_moderator', 'author.member_since'))
+            #only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 'created_at', 'last_modified')
             output = post_schema.dump(query).data
 
             return jsonify({'posts': output})
@@ -91,10 +120,12 @@ class PostList(Resource):
                     print("*post id =", post_id)
                     insert_tags(tags, post_id)
                     print('log 4')
+
                     postid = int(post_id)
                     query = models.Post.get(models.Post.id == postid)
-                    post_schema = models.PostSchema(only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
-            'created_at', 'last_modified'))
+                    post_schema = models.PostSchema(only=('id', 'content', 'title', 'author.name', 
+                                                    'author.id', 'is_url', 'created_at', 
+                                                    'last_modified'))
 
                     print('log 6')
                     output = post_schema.dump(query).data
@@ -109,11 +140,13 @@ class PostList(Resource):
 class Post(Resource):
     def get(self, id):
         try:
+            
             query = models.Post.get(models.Post.id == id)
             post_schema = models.PostSchema(only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
             'created_at', 'last_modified'))
-            output = post_schema.dump(query).data
             
+            output = post_schema.dump(query).data
+
             return jsonify({'post': output})
 
         except models.DoesNotExist:
@@ -157,6 +190,37 @@ class Post(Resource):
         
         return Response(status=204, mimetype='application/json')
 
+class PostTags(Resource):
+    def get(self, id):
+
+        try:
+            query = (models.Tag.select(models.Tag).
+            join(models.PostTags, JOIN.RIGHT_OUTER).where(models.PostTags.post == id))            
+            
+        except:            
+            abort(404, message="Record does not exist.")
+        
+        tag_schema = models.TagSchema(many=True)
+        output = tag_schema.dump(query).data
+        return jsonify({'tags': output})
+    
+class PostComments(Resource):
+    def get(self, id):
+
+        try:
+            query = (models.Comment.select(models.Comment).where(models.Comment.post == id))            
+            
+        except:            
+            abort(404, message="Record does not exist.")
+        
+        comment_schema = models.CommentSchema(many=True, only=('id', 'content', 'author.id',
+                                                'author.name', 'created_at', 'last_modified'))
+        output = comment_schema.dump(query).data
+        return jsonify({'comments': output})
+    
+        
 
 api.add_resource(PostList, '/posts', endpoint='posts')
 api.add_resource(Post, '/posts/<int:id>', endpoint='post')
+api.add_resource(PostTags, '/posts/<int:id>/tags', endpoint='post_tags')
+api.add_resource(PostComments, '/posts/<int:id>/comments', endpoint='post_comments')
