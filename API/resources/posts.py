@@ -8,16 +8,36 @@ from playhouse.shortcuts import dict_to_model, model_to_dict
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from peewee import JOIN
+from peewee import JOIN, fn
 
 import models
 
 from auth import auth
 
+import validators
+
 
 posts_api = Blueprint('resources.posts', __name__)
 api = Api(posts_api)
 
+def is_valid(data):
+    # validates new user data
+    if ('title' in data and 'content' in data and
+        'is_url' in data and 'author' in data and
+        'tags' in data):
+
+        if (not data['title'] or not data['content'] or not data['author'].isalnum() or
+            len(data['title']) > 300):
+            return False
+
+        if data['is_url']:
+            if not validators.url(data['content'].strip()):
+                return False
+        
+        return True
+        
+    else: 
+        return False
 
 def insert_tags(tags, post_id):
     print()
@@ -42,34 +62,7 @@ def insert_tags(tags, post_id):
 class PostList(Resource):
 
     def get(self):
-        try:            
-            '''
-            query = (models.Post.select(models.Post, models.Tag).
-            join(models.PostTags).join(models.Tag).order_by(models.Post.id))
-            
-            
-            query = (models.Post.select(models.PostTags, models.Post, models.Tag)
-                .join(models.PostTags, JOIN.LEFT_OUTER)
-                .join(models.Tag, JOIN.LEFT_OUTER)
-                .order_by(models.Post.id))
-        
-            posts = {}
-            last = None
-            for result in query:
-                post_id = result.id
-                if (post_id not in posts):
-                    # creates a new post object matching the post data
-                    posts[post_id] = models.Post(**result.__data__)
-                    posts[post_id].tags = []
-                    try:
-                        # extracts the associated tag
-                        posts[post_id].tags.append(result.PostTags.tag)
-                        #print('tag:', result.PostTags)
-                    except AttributeError:
-                        #print('tag:', result.PostTags.tag)
-                        print('tag:', result.tag)
-                        pass
-            '''
+        try:
             query = models.Post.select().order_by(models.Post.id)
             post_schema = models.PostSchema(many=True, exclude=('author.password', 'author.email', 'author.is_moderator', 'author.member_since'))
             #only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 'created_at', 'last_modified')
@@ -85,13 +78,13 @@ class PostList(Resource):
         if(request.is_json):
             print('it got here 2')
             data = request.get_json(force=True)
-            if ('title' in data and 'content' in data and
-                    'is_url' in data and 'author' in data and 'tags' in data):
 
-                title = data['title']
+            if is_valid(data):
+
+                title = data['title'].strip()
                 is_url = data['is_url']
-                name = data['author']
-                content = data['content']
+                name = data['author'].strip()
+                content = data['content'].strip()
                 tags = data['tags']                       
 
                 author = models.User.get(models.User.name == name)
@@ -132,7 +125,7 @@ class PostList(Resource):
                     print('log 7')
                     return jsonify({'post': output})
             else:
-                return jsonify({'error': {'message': 'missing required field(s).'}})
+                abort(400, message="Missing or invalid fields.")
         else:
             abort(400, message='Not JSON data')
 
@@ -195,7 +188,7 @@ class PostTags(Resource):
 
         try:
             query = (models.Tag.select(models.Tag).
-            join(models.PostTags, JOIN.RIGHT_OUTER).where(models.PostTags.post == id))            
+                join(models.PostTags, JOIN.RIGHT_OUTER).where(models.PostTags.post == id))            
             
         except:            
             abort(404, message="Record does not exist.")
@@ -214,13 +207,81 @@ class PostComments(Resource):
             abort(404, message="Record does not exist.")
         
         comment_schema = models.CommentSchema(many=True, only=('id', 'content', 'author.id',
-                                                'author.name', 'created_at', 'last_modified'))
+                                                'author.name', 'created_at', 'last_modified', 'parent_id'))
         output = comment_schema.dump(query).data
         return jsonify({'comments': output})
-    
-        
 
+class PostVotes(Resource):
+    def get(self, id):
+        if(request.is_json):
+            try:
+                query = models.PostVotes.select().where(models.PostVotes.post_id == id)                
+            except:            
+                abort(404, message="Record does not exist.")
+            
+            try:
+
+                schema = (models.PostVotesSchema(many=True, 
+                    only=('post_id', 'value', 'voter.name', 'voter.id')))
+
+                output = schema.dump(query).data
+                
+                summation = 0
+                for i in output:
+                    summation += i['value']
+
+                return jsonify({'votes': output, 'total':summation})
+            except: 
+                abort(500, message="Oh, no! The Community is in turmoil!")
+       
+        else:
+            abort(400, message='Not JSON data')
+
+    @auth.login_required
+    def post(self, id):
+        if(request.is_json):
+        
+            data = request.get_json(force=True)
+            try:
+                print('log 1')
+                value = data['value']
+                voter = data['voter']
+                user = models.User.get(models.User.name == voter)
+
+                if not (value >= 0 and value <= 1):
+                    abort(400, message="Missing or invalid fields.")
+
+                print('log 2')
+            except:
+                print('log 3')
+                abort(400, message="Missing or invalid fields.")
+
+            print('log 4')
+            
+            if g.user != user:
+                abort(401)
+            
+            query = models.PostVotes.select().where((models.PostVotes.voter == user.id) & (models.PostVotes.voter == user.id))
+            print('log 5')
+
+            if query.exists():
+                models.PostVotes.update(value=value).where((models.PostVotes.voter == user.id) & (models.PostVotes.voter == user.id)).execute()
+                print('update')
+                Response(status=200, mimetype='application/json')
+            
+            else:
+                models.PostVotes.insert(post=id, voter=user.id, value=value).execute()     
+                print('new')
+                Response(status=200, mimetype='application/json')
+
+
+        else:
+            abort(400, message='Not JSON data')
+
+        return Response(status=200, mimetype='application/json')
+        
 api.add_resource(PostList, '/posts', endpoint='posts')
 api.add_resource(Post, '/posts/<int:id>', endpoint='post')
 api.add_resource(PostTags, '/posts/<int:id>/tags', endpoint='post_tags')
 api.add_resource(PostComments, '/posts/<int:id>/comments', endpoint='post_comments')
+api.add_resource(PostVotes, '/posts/<int:id>/votes', endpoint='post_votes')

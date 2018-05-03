@@ -9,10 +9,29 @@ from webargs.flaskparser import use_args
 
 import models
 
+from validate_email import validate_email
+
 from auth import auth
 
 users_api = Blueprint('resources.users', __name__)
 api = Api(users_api)
+
+def is_valid(data):
+    # validates new user data
+    if ('name' in data and 'email' in data and 
+        'password' in data):
+
+        if (not data['name'] or not data['name'].isalnum() or
+            len(data['name']) > 45):
+            return False
+
+        if not validate_email(data['email']):
+            return False
+        
+        return True
+        
+    else: 
+        return False
 
 
 class UserList(Resource):
@@ -28,11 +47,10 @@ class UserList(Resource):
     def post(self):
         if(request.is_json):          
             data = request.get_json(force=True)
-            if 'name'in data:
-                name = data['name']
-                email = data['email']
-                password = data['password']
-
+            if is_valid(data):
+                name = data['name'].strip()
+                email = data['email'].strip()
+                password = data['password'].strip()
                                 
                 query = models.User.select().where((models.User.name == name) | (models.User.email == email))
                 
@@ -50,7 +68,7 @@ class UserList(Resource):
 
                 return jsonify(user)
             else:
-                return jsonify({"error":{'message':'No username provided.'}})
+                abort(400, message="Missing or invalid fields.")
         else:
             abort(400, message="Not JSON data.")
 

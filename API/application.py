@@ -38,7 +38,7 @@ limiter = Limiter(application, global_limits=['7200/hour'], key_func=get_ipaddr)
     
 @application.route('/', methods=['GET'])
 def info():
-    return jsonify({'Community API':{'Version':config.API_VERSION,'Up Time': up_time(start_time)}})  
+    return jsonify({'Community API':{'Version':config.API_VERSION,'Up Time': up_time(start_time), 'deployment':'4'}})  
 
 
 if __name__ == '__main__':

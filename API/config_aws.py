@@ -7,9 +7,13 @@ class Database:
     USER = 'Pablodb'
     PAS  = '|H0rizon3.14X|'
 
+
+
 class App:
     API_VERSION = 1
-    URL_PREFIX = '/api/v' + str(API_VERSION)
+    #URL_PREFIX = '/api/v' + str(API_VERSION)
+    URL_PREFIX = ''
     DEBUG = True
-    HOST = '127.0.0.1'
+    HOST = '0.0.0.0'
     PORT = 8000
+    SECRET = '4Q*hrG3EMG@r^!oMBlQ1Z3PmQLbs@WR*^74j#7BCWAaX9J3$lFzHxLUnkmo'

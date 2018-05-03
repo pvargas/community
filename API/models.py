@@ -202,6 +202,9 @@ class PostSchema(ModelSchema):
 
 class PostVotesSchema(ModelSchema):
 
+    voter = Related()
+    post = Related()
+
     class Meta:
         model = PostVotes
 
