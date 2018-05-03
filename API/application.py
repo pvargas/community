@@ -33,8 +33,8 @@ def up_time(seconds):
     h, m = divmod(m, 60)
     return "%d:%02d:%02d" % (h, m, s)
 
-limiter = Limiter(application, global_limits=['7200/hour'], key_func=get_ipaddr)
-#limiter.exempt(users)
+# limiter = Limiter(application, global_limits=['7200/hour'], key_func=get_ipaddr)
+# limiter.exempt(users)
     
 @application.route('/', methods=['GET'])
 def info():

@@ -279,9 +279,29 @@ class PostVotes(Resource):
             abort(400, message='Not JSON data')
 
         return Response(status=200, mimetype='application/json')
+
+class PostsByTag(Resource):
+    def get(self, name):
+
+        try:
+            query = (models.Post.select(models.Post).
+                join(models.PostTags)
+                .join(models.Tag)
+                .where(models.Tag.name == name))            
+            
+        except:            
+            abort(404, message="Record does not exist.")
+        
+        schema = models.PostSchema(many=True, exclude=('author.password', 'author.email', 'author.is_moderator', 'author.member_since'))
+        output = schema.dump(query).data
+        return jsonify({'posts': output})
+
+
+    
         
 api.add_resource(PostList, '/posts', endpoint='posts')
 api.add_resource(Post, '/posts/<int:id>', endpoint='post')
 api.add_resource(PostTags, '/posts/<int:id>/tags', endpoint='post_tags')
 api.add_resource(PostComments, '/posts/<int:id>/comments', endpoint='post_comments')
 api.add_resource(PostVotes, '/posts/<int:id>/votes', endpoint='post_votes')
+api.add_resource(PostsByTag, '/posts/tag/<name>', endpoint='posts_by_tag')
