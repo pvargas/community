@@ -10,7 +10,7 @@ class Database:
 
 
 class App:
-    API_VERSION = 0.76
+    API_VERSION = 0.81
     #URL_PREFIX = '/api/v' + str(API_VERSION)
     URL_PREFIX = ''
     DEBUG = True

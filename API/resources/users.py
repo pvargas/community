@@ -90,38 +90,46 @@ class UserPosts(Resource):
 
         try:
             user = models.User.get(models.User.name == name)            
-            query = models.Post.select().where(models.Post.author == user.id).order_by(models.Post.id)
-
-            post_schema = models.PostSchema(many=True, 
-            only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
-            'created_at', 'last_modified'))
-
-            output = post_schema.dump(query).data
-
-            info_string = name+"'s posts"
-
-            return jsonify({info_string: output})
         except:
-            abort(500, message="Oh, no! The Community is in turmoil!")
+            abort(404, message="user not found")
+
+        query = models.Post.select().where(models.Post.author == user.id).order_by(models.Post.id)
+
+        post_schema = models.PostSchema(many=True, 
+        only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
+        'created_at', 'last_modified'))
+
+        output = post_schema.dump(query).data
+
+        info_string = name+"'s posts"
+        count = len(output)
+
+        return jsonify({info_string: output, 'count':count})
+        
 
 class UserComments(Resource):
     def get(self, name):
 
         try:
-            user = models.User.get(models.User.name == name)            
-            query = models.Comment.select().where(models.Comment.author == user.id).order_by(models.Comment.id)
-
-            comment_schema = models.CommentSchema(many=True, 
-            only=('id', 'content', 'author.name', 'author.id', 
-            'created_at', 'last_modified'))
-
-            output = comment_schema.dump(query).data
-
-            info_string = name+"'s comments"
-
-            return jsonify({info_string: output})
+            user = models.User.get(models.User.name == name)  
         except:
-            abort(500, message="Oh, no! The Community is in turmoil!")
+            abort(404, message="user not found")
+
+        query = models.Comment.select().where(models.Comment.author == user.id).order_by(models.Comment.id)
+
+        comment_schema = models.CommentSchema(many=True, 
+        only=('id', 'content', 'author.name', 'author.id', 
+        'created_at', 'last_modified'))
+
+        output = comment_schema.dump(query).data
+        
+        count = len(output)
+
+        info_string = name+"'s comments"
+        print('count',count)
+
+        return jsonify({info_string: output, 'count':count})
+       
 
 api.add_resource(UserList, '/users', endpoint='users')
 api.add_resource(User, '/users/<name>', endpoint='user')

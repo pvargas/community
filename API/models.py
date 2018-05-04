@@ -17,6 +17,10 @@ DATABASE = MySQLDatabase(config.DB, host=config.HOST,
                          port=config.PORT, user=config.USER, password=config.PAS)
 migrator = MySQLMigrator(DATABASE)
 
+import time
+
+blacklist = {}
+
 ### models
 
 class User(Model):
@@ -60,6 +64,8 @@ class User(Model):
             data = serializer.loads(token)
         except(SignatureExpired, BadSignature):
             return None
+        #if token in blacklist:
+            #return None
         else:
             user = User.get(User.id==data['id'])
             return user
@@ -73,15 +79,16 @@ class User(Model):
     
     def generate_auth_token(self, expires=3600*12):
         serializer = Serializer(app.SECRET, expires_in=expires)
-        #serializer = Serializer(pwd.genword(entropy=56, charset="ascii_72", length=59), expires_in=expires)
+        
         
         return serializer.dumps({'id':self.id})
     
-    def expire_token(self, expires=3600*12):
-        serializer = Serializer(app.SECRET)
-        #serializer = Serializer(pwd.genword(entropy=56, charset="ascii_72", length=59), expires_in=expires)
-        
-        serializer.loads({'id':self.id})
+    def blacklist_token(self, token):
+        blacklist[token] = time.time()//3600
+
+        for key, value in blacklist.iteritems():
+            if ((time.time()//3600) - value) >= 6:
+                blacklist.pop(key, None)
         
 
 

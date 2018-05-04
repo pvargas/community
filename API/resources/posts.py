@@ -248,30 +248,31 @@ class PostComments(Resource):
         return jsonify({'comments': output})
 
 class PostVotes(Resource):
-    def get(self, id):
-        if(request.is_json):
-            try:
-                query = models.PostVotes.select().where(models.PostVotes.post_id == id)                
-            except:            
-                abort(404, message="Record does not exist.")
-            
-            try:
 
-                schema = (models.PostVotesSchema(many=True, 
+    def get(self, id):
+        
+        try:
+            
+            query = models.PostVotes.select().where(models.PostVotes.post_id == id)
+        except:
+            abort(404, message="Record does not exist.")
+
+        try:
+            
+            schema = (models.PostVotesSchema(many=True,
                     only=('post_id', 'value', 'voter.name', 'voter.id')))
 
-                output = schema.dump(query).data
-                
-                summation = 0
-                for i in output:
-                    summation += i['value']
+            output = schema.dump(query).data
 
-                return jsonify({'votes': output, 'total':summation})
-            except: 
-                abort(500, message="Oh, no! The Community is in turmoil!")
-       
-        else:
-            abort(400, message='Not JSON data')
+            summation = 0
+            for i in output:
+                summation += i['value']
+
+            return jsonify({'votes': output, 'total': summation})
+        except:
+            abort(500, message="Oh, no! The Community is in turmoil!")
+
+        
 
     @auth.login_required
     def post(self, id):

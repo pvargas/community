@@ -11,6 +11,8 @@ import models
 
 from auth import auth
 
+
+
 account_api = Blueprint('resources.account', __name__)
 api = Api(account_api)
 
