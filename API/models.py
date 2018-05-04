@@ -83,7 +83,7 @@ class User(Model):
         
         serializer.loads({'id':self.id})
         
-#PostTags_Proxy = DeferredThroughModel()
+
 
 class Tag(Model):
     id = PrimaryKeyField(primary_key=True)
@@ -156,7 +156,7 @@ class PostVotes(Model):
 
 class Comment(Model):
     id = PrimaryKeyField(primary_key=True)
-    parent = ForeignKeyField('self', related_name='children', backref='comments', null=True)
+    parent = ForeignKeyField('self', related_name='children', backref='comments', null=True, on_delete='CASCADE')
     author = ForeignKeyField(User, backref='posts')
     post = ForeignKeyField(Post, backref='comments')
     content = TextField()
@@ -231,8 +231,10 @@ class CommentVotesSchema(ModelSchema):
 
 def initialize():
     DATABASE.connect()
+
     DATABASE.create_tables([User, Post, Tag, Comment, PostVotes,
                             CommentVotes, PostTags], safe=True)
+
     migrate(
         # Make `posts` allow NULL values.
         # migrator.drop_not_null('post', 'last_modified'),

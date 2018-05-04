@@ -40,23 +40,23 @@ def is_valid(data):
         return False
 
 def insert_tags(tags, post_id):
-    print()
+
     for i in tags:
-        print(i["name"])
-        if not models.Tag.select().where(models.Tag.name == i["name"].lower()).exists():
-            print("insert^tags log 1")
-            tag = models.Tag.create_tag(i["name"].lower())
-            print("insert^tags log 2")
+        if len(i["name"]) > 45:
+            abort(400, message="Missing or invalid fields.")
+
+        if not models.Tag.select().where(models.Tag.name == i["name"].lower().strip()).exists():
+
+            tag = models.Tag.create_tag(i["name"].lower().strip())
             #models.PostTags.create_relationship(post_id, tag.id)
             models.PostTags.insert(post_id=post_id, tag_id=tag.id).execute()
+
         else:
-            print("insert^tags log 3")
-            tag = models.Tag.get(models.Tag.name == i["name"].lower())
-            print("insert^tags log 4")
-            print("tag^id =", tag.id)
+
+            tag = models.Tag.get(models.Tag.name == i["name"].lower().strip())
             #models.PostTags.create_relationship(post_id, tag.id)
             models.PostTags.insert(post_id=post_id, tag_id=tag.id).execute()
-            print("last log line")
+            
 
 
 class PostList(Resource):
@@ -138,46 +138,81 @@ class Post(Resource):
             post_schema = models.PostSchema(only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 
             'created_at', 'last_modified'))
             
-            output = post_schema.dump(query).data
+            post = post_schema.dump(query).data
 
-            return jsonify({'post': output})
+            print(post)
 
-        except models.DoesNotExist:
-            abort(404, message="Record does not exist.")
+            query = (models.Tag.select(models.Tag).
+                join(models.PostTags, JOIN.RIGHT_OUTER).
+                where(models.PostTags.post == id)) 
 
-    #@auth.login_required
-    def put(self, id):
-        try:
-            data = request.get_json(force=True)
-            if ('title' in data and 'content' in data and
-                    'is_url' in data and 'author' in data):
+            tag_schema = models.TagSchema(many=True)
+            tags = tag_schema.dump(query).data
 
-                title = data['title']
-                content = data['content']
+            post['tags'] = tags
 
-            query = models.Post.update(
-                title=title, content=content).where(models.Post.id == id)
-            query.execute()
-
-            return Response(status=200, mimetype='application/json')
+            return jsonify({'post': post})
 
         except models.DoesNotExist:
             abort(404, message="Record does not exist.")
 
     @auth.login_required
+    def put(self, id):
+        if(request.is_json):
+            
+            data = request.get_json(force=True)
+
+            try:        
+                post = models.Post.select().where(models.Post.id == id).get()
+                
+            except:
+                abort(404, message="Post doesn't exist")
+                    
+            if g.user != post.author:
+                # unauthorized
+                abort(401)
+            
+            if ('title' in data and 'content' in data and 'is_url' in data):
+
+                title = data['title'].strip()
+                content = data['content'].strip()
+                is_url = data['is_url']
+
+                query = models.Post.update(title=title, content=content, is_url=is_url).where(models.Post.id == id)
+                query.execute()
+
+                query_2 = models.Post.get(models.Post.id == id)
+
+                post_schema = models.PostSchema(only=('id', 'content', 'title', 
+                            'author.name', 'author.id', 'is_url', 
+                             'created_at', 'last_modified'))
+            
+                post = post_schema.dump(query_2).data
+
+                return jsonify({'post': post})
+            else:
+                abort(400, message="Missing or invalid fields.")
+
+        else:
+            abort(400, message='Not JSON data')
+
+    @auth.login_required
     def delete(self, id):
         try:        
             post = models.Post.select().where(models.Post.id == id).get()
+            
+        except:
+            abort(404, message="Post doesn't exist")
                 
-            if g.user != post.author:
-                print("user is different")
-                abort(401)
+        if g.user != post.author:
+            print("user is not post author")
+            abort(401)
 
+        try:
             models.PostVotes.delete().where(models.PostVotes.post == id).execute()            
             models.PostTags.delete().where(models.PostTags.post == id).execute()            
             models.Comment.delete().where(models.Comment.post == id).execute()            
             models.Post.delete().where(models.Post.id == id).execute()
-            
         except:
             abort(500, message="Oh, no! The Community is in turmoil!")
         
@@ -188,7 +223,8 @@ class PostTags(Resource):
 
         try:
             query = (models.Tag.select(models.Tag).
-                join(models.PostTags, JOIN.RIGHT_OUTER).where(models.PostTags.post == id))            
+                    join(models.PostTags, JOIN.RIGHT_OUTER).
+                    where(models.PostTags.post == id))            
             
         except:            
             abort(404, message="Record does not exist.")
@@ -296,8 +332,6 @@ class PostsByTag(Resource):
         output = schema.dump(query).data
         return jsonify({'posts': output})
 
-
-    
         
 api.add_resource(PostList, '/posts', endpoint='posts')
 api.add_resource(Post, '/posts/<int:id>', endpoint='post')

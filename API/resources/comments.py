@@ -3,7 +3,7 @@ from auth import auth
 
 import json
 
-from flask import Blueprint, jsonify, Response
+from flask import Blueprint, jsonify, Response, g
 from flask_restful import Api, Resource, marshal, marshal_with, request, abort
 from flask_marshmallow import Marshmallow
 from playhouse.shortcuts import dict_to_model, model_to_dict
@@ -27,7 +27,7 @@ class CommentList(Resource):
         except:
             abort(500, message="Oh, no! The Community is in turmoil!")
 
-    #@auth.login_required
+    @auth.login_required
     def post(self):       
         print('log 1')
         if(request.is_json):
@@ -90,6 +90,73 @@ class Comment(Resource):
             return jsonify({'comment': output})
         except models.DoesNotExist:
             abort(404, message='Comment does not exists.')
+
+    @auth.login_required
+    def put(self, id):
+        if(request.is_json):
+
+            data = request.get_json(force=True)
+
+            try:        
+                comment = models.Comment.select().where(models.Comment.id == id).get()
+                
+            except:
+                abort(404, message="Comment doesn't exist")
+                    
+            if g.user != comment.author:
+                abort(401)
+            
+            if ('content' in data):
+                content = data['content'].strip()
+
+                query = models.Comment.update(content=content).where(models.Comment.id == id)
+                query.execute()
+
+                query_2 = models.Comment.get(models.Comment.id == id)
+
+                comment_schema = models.CommentSchema(only=('content','post_id',
+                            'author.name', 'author.id', 'id',
+                             'created_at', 'last_modified'))
+            
+                comment = comment_schema.dump(query_2).data
+
+                return jsonify({'comment': comment})
+            else:
+                abort(400, message="Missing or invalid fields.")
+
+        else:
+            abort(400, message='Not JSON data')
+
+    @auth.login_required
+    def delete(self, id):
+        try:        
+            comment = models.Comment.select().where(models.Comment.id == id).get()
+            
+        except:
+            abort(404, message="Comment doesn't exist")
+                
+        if g.user != comment.author:
+            # unauthorized
+            abort(401)
+
+        try:
+            content='[removed by user]'
+            query = models.Comment.update(content=content).where(models.Comment.id == id)
+            query.execute()
+
+            query_2 = models.Comment.get(models.Comment.id == id)
+
+            comment_schema = models.CommentSchema(only=('content','post_id',
+                        'author.name', 'author.id', 'id',
+                            'created_at', 'last_modified'))
+        
+            comment = comment_schema.dump(query_2).data
+
+            return jsonify({'comment': comment})
+        except:
+            abort(500, message="Oh, no! The Community is in turmoil!")
+        
+        return Response(status=204, mimetype='application/json')
 
 
 api.add_resource(CommentList, '/comments', endpoint='comments')

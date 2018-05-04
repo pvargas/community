@@ -1,8 +1,8 @@
 ''' Configuration file '''
 
 class Database:
-    DB = 'communityDB'
-    HOST = 'communitydbinstance.ci19co3on1ki.us-east-2.rds.amazonaws.com'
+    DB = 'communityDB2'
+    HOST = 'communitydb2.ci19co3on1ki.us-east-2.rds.amazonaws.com'
     PORT = 3306
     USER = 'Pablodb'
     PAS  = '|H0rizon3.14X|'
@@ -10,7 +10,7 @@ class Database:
 
 
 class App:
-    API_VERSION = 1
+    API_VERSION = 0.76
     #URL_PREFIX = '/api/v' + str(API_VERSION)
     URL_PREFIX = ''
     DEBUG = True

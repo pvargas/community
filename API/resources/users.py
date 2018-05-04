@@ -55,7 +55,7 @@ class UserList(Resource):
                 query = models.User.select().where((models.User.name == name) | (models.User.email == email))
                 
                 if query.exists():
-                    abort(422, message='Username or email already exist.')
+                    abort(422, message='Username or email already exists.')
 
                 else:                   
                     user = models.User.create_user(name, email, password)

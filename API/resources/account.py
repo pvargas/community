@@ -18,8 +18,11 @@ class Login(Resource):
     @auth.login_required
     def get(self):
 
-        token = g.user.generate_auth_token()
-        return jsonify({'token':token.decode('ascii'), 'name':g.user.name})
+        try:
+            token = g.user.generate_auth_token()
+            return jsonify({'token':token.decode('ascii'), 'name':g.user.name})
+        except:
+            abort(400, message="Invalid request.")
 
 class Logout(Resource):
     @auth.login_required
