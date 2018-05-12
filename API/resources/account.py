@@ -11,8 +11,6 @@ import models
 
 from auth import auth
 
-
-
 account_api = Blueprint('resources.account', __name__)
 api = Api(account_api)
 
@@ -32,7 +30,7 @@ class Logout(Resource):
 
         token = request.headers['Authorization'][6:]
       
-        g.user.expire_token()
+        g.user.expire_token(token)
         return Response('Logout successful', status=200)
         #jsonify({'response':response})
 

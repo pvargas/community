@@ -285,7 +285,7 @@ class PostVotes(Resource):
                 voter = data['voter']
                 user = models.User.get(models.User.name == voter)
 
-                if not (value >= 0 and value <= 1):
+                if not (value >= -1 and value <= 1):
                     abort(400, message="Missing or invalid fields.")
 
                 print('log 2')
@@ -298,11 +298,11 @@ class PostVotes(Resource):
             if g.user != user:
                 abort(401)
             
-            query = models.PostVotes.select().where((models.PostVotes.voter == user.id) & (models.PostVotes.voter == user.id))
+            query = models.PostVotes.select().where((models.PostVotes.post == id) & (models.PostVotes.voter == user.id))
             print('log 5')
 
             if query.exists():
-                models.PostVotes.update(value=value).where((models.PostVotes.voter == user.id) & (models.PostVotes.voter == user.id)).execute()
+                models.PostVotes.update(value=value).where((models.PostVotes.post == id) & (models.PostVotes.voter == user.id)).execute()
                 print('update')
                 Response(status=200, mimetype='application/json')
             

@@ -1,20 +1,20 @@
 import datetime
 import time
 
-from flask import Flask, g, jsonify, Response, request
-
+import flask_cors
+from flask import Flask, Response, g, jsonify, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_ipaddr
+from flask_mail import Mail, Message
 
-import flask_cors
 import models
 from auth import auth
-from config import App as config
+from config import App as config, Mail as mailconf
+from resources.account import account_api
 from resources.comments import comments_api
 from resources.posts import posts_api
 from resources.tags import tags_api
 from resources.users import users_api
-from resources.account import account_api
 
 start_time = time.time()
 
@@ -26,6 +26,13 @@ application.register_blueprint(tags_api, url_prefix=config.URL_PREFIX)
 application.register_blueprint(comments_api, url_prefix=config.URL_PREFIX)
 application.register_blueprint(account_api, url_prefix=config.URL_PREFIX)
 
+application.config['MAIL_SERVER'] = mailconf.SERVER
+application.config['MAIL_PORT'] = mailconf.PORT
+application.config['MAIL_USE_SSL'] = mailconf.SSL
+application.config['MAIL_USERNAME'] = mailconf.EMAIL
+application.config['MAIL_PASSWORD'] = mailconf.PASSWORD
+
+mail = Mail(application)
 
 def up_time(seconds):
     t = time.time() - seconds
@@ -35,10 +42,15 @@ def up_time(seconds):
 
 # limiter = Limiter(application, global_limits=['7200/hour'], key_func=get_ipaddr)
 # limiter.exempt(users)
-    
+
+
 @application.route('/', methods=['GET'])
 def info():
-    return jsonify({'Community API':{'Version':config.API_VERSION,'Up Time': up_time(start_time), 'deployment':'1'}})  
+    '''
+    msg = Message('Someone visited the API root', sender=mailconf.EMAIL, recipients=['matomario8@gmail.com'])
+    mail.send(msg)
+    '''
+    return jsonify({'Community API': {'Version': config.API_VERSION, 'Up Time': up_time(start_time), 'deployment': '3'}})
 
 
 if __name__ == '__main__':

@@ -101,10 +101,9 @@ class UserPosts(Resource):
 
         output = post_schema.dump(query).data
 
-        info_string = name+"'s posts"
         count = len(output)
 
-        return jsonify({info_string: output, 'count':count})
+        return jsonify({'posts': output, 'count':count})
         
 
 class UserComments(Resource):
@@ -118,17 +117,16 @@ class UserComments(Resource):
         query = models.Comment.select().where(models.Comment.author == user.id).order_by(models.Comment.id)
 
         comment_schema = models.CommentSchema(many=True, 
-        only=('id', 'content', 'author.name', 'author.id', 
+        only=('id', 'content', 'author.name', 'author.id', 'post_id', 'post.title',
         'created_at', 'last_modified'))
 
         output = comment_schema.dump(query).data
         
         count = len(output)
 
-        info_string = name+"'s comments"
         print('count',count)
 
-        return jsonify({info_string: output, 'count':count})
+        return jsonify({'comments': output, 'count':count})
        
 
 api.add_resource(UserList, '/users', endpoint='users')

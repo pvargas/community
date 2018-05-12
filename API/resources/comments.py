@@ -158,6 +158,77 @@ class Comment(Resource):
         
         return Response(status=204, mimetype='application/json')
 
+class CommentVotes(Resource):
+
+    def get(self, id):
+        
+        try:
+            
+            query = models.CommentVotes.select().where(models.CommentVotes.comment_id == id)
+        except:
+            abort(404, message="Record does not exist.")
+
+        try:
+            
+            schema = (models.CommentVotesSchema(many=True,
+                    only=('comment_id', 'value', 'voter.name', 'voter.id')))
+
+            output = schema.dump(query).data
+
+            summation = 0
+            for i in output:
+                summation += i['value']
+
+            return jsonify({'votes': output, 'total': summation})
+        except:
+            abort(500, message="Oh, no! The Community is in turmoil!")
+
+        
+
+    @auth.login_required
+    def post(self, id):
+        if(request.is_json):
+        
+            data = request.get_json(force=True)
+            try:
+                print('log 1')
+                value = data['value']
+                voter = data['voter']
+                user = models.User.get(models.User.name == voter)
+
+                if not (value >= -1 and value <= 1):
+                    abort(400, message="Missing or invalid fields.")
+
+                print('log 2')
+            except:
+                print('log 3')
+                abort(400, message="Missing or invalid fields.")
+
+            print('log 4')
+            
+            if g.user != user:
+                abort(401)
+            
+            query = models.CommentVotes.select().where((models.CommentVotes.comment == id) & (models.CommentVotes.voter == user.id))
+            print('log 5')
+
+            if query.exists():
+                models.CommentVotes.update(value=value).where((models.CommentVotes.comment == id) & (models.CommentVotes.voter == user.id)).execute()
+                print('update')
+                Response(status=200, mimetype='application/json')
+            
+            else:
+                models.CommentVotes.insert(comment=id, voter=user.id, value=value).execute()     
+                print('new')
+                Response(status=200, mimetype='application/json')
+
+
+        else:
+            abort(400, message='Not JSON data')
+
+        return Response(status=200, mimetype='application/json')
+
 
 api.add_resource(CommentList, '/comments', endpoint='comments')
 api.add_resource(Comment, '/comments/<int:id>', endpoint='comment')
+api.add_resource(CommentVotes, '/comments/<int:id>/votes', endpoint='comment_votes')

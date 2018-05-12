@@ -83,12 +83,12 @@ class User(Model):
         
         return serializer.dumps({'id':self.id})
     
-    def blacklist_token(self, token):
-        blacklist[token] = time.time()//3600
+    def expire_token(self, token):
+        global blacklist[token] = time.time()//3600
 
-        for key, value in blacklist.iteritems():
+        for key, value in blacklist.items():
             if ((time.time()//3600) - value) >= 6:
-                blacklist.pop(key, None)
+                global blacklist.pop(key, None)
         
 
 
@@ -231,6 +231,8 @@ class CommentSchema(ModelSchema):
 
 
 class CommentVotesSchema(ModelSchema):
+    voter = Related()
+    comment = Related()
 
     class Meta:
         model = CommentVotes
