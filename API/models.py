@@ -84,11 +84,11 @@ class User(Model):
         return serializer.dumps({'id':self.id})
     
     def expire_token(self, token):
-        global blacklist[token] = time.time()//3600
+        blacklist[token] = time.time()//3600
 
         for key, value in blacklist.items():
             if ((time.time()//3600) - value) >= 6:
-                global blacklist.pop(key, None)
+                blacklist.pop(key, None)
         
 
 
