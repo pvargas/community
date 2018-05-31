@@ -4,9 +4,13 @@
 
 Community is a content sharing and rating platform, inspired by Reddit and Medium, and our need to find a capstone project.
 
-# Built With
+## Built With
 * [Flask](http://flask.pocoo.org/)
 * [VUE.js](https://vuejs.org/)
+
+## Contributors
+* API: [Pablo Vargas](https://github.com/VirtualDistortion)
+* Frontend: [Romario Mato](https://github.com/matomario8)
 
 ## Documentation
 
