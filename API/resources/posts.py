@@ -68,6 +68,8 @@ class PostList(Resource):
             #only=('id', 'content', 'title', 'author.name', 'author.id', 'is_url', 'created_at', 'last_modified')
             output = post_schema.dump(query).data
 
+            models.DATABASE.close()
+
             return jsonify({'posts': output})
         except:
             abort(500, message="Oh, no! The Community is in turmoil!")
@@ -123,10 +125,14 @@ class PostList(Resource):
                     print('log 6')
                     output = post_schema.dump(query).data
                     print('log 7')
+                    
+                    models.DATABASE.close()
                     return jsonify({'post': output})
             else:
+                models.DATABASE.close()
                 abort(400, message="Missing or invalid fields.")
         else:
+            models.DATABASE.close()
             abort(400, message='Not JSON data')
 
 
@@ -151,9 +157,12 @@ class Post(Resource):
 
             post['tags'] = tags
 
+            models.DATABASE.close()
+
             return jsonify({'post': post})
 
         except models.DoesNotExist:
+            models.DATABASE.close()
             abort(404, message="Record does not exist.")
 
     @auth.login_required
@@ -189,11 +198,15 @@ class Post(Resource):
             
                 post = post_schema.dump(query_2).data
 
+                models.DATABASE.close()
+
                 return jsonify({'post': post})
             else:
+                models.DATABASE.close()
                 abort(400, message="Missing or invalid fields.")
 
         else:
+            models.DATABASE.close()
             abort(400, message='Not JSON data')
 
     @auth.login_required
@@ -202,10 +215,12 @@ class Post(Resource):
             post = models.Post.select().where(models.Post.id == id).get()
             
         except:
+            models.DATABASE.close()
             abort(404, message="Post doesn't exist")
                 
         if g.user != post.author:
             print("user is not post author")
+            models.DATABASE.close()
             abort(401)
 
         try:
@@ -214,8 +229,10 @@ class Post(Resource):
             models.Comment.delete().where(models.Comment.post == id).execute()            
             models.Post.delete().where(models.Post.id == id).execute()
         except:
+            models.DATABASE.close()
             abort(500, message="Oh, no! The Community is in turmoil!")
-        
+
+        models.DATABASE.close()
         return Response(status=204, mimetype='application/json')
 
 class PostTags(Resource):
@@ -227,10 +244,14 @@ class PostTags(Resource):
                     where(models.PostTags.post == id))            
             
         except:            
+            models.DATABASE.close()
             abort(404, message="Record does not exist.")
         
         tag_schema = models.TagSchema(many=True)
         output = tag_schema.dump(query).data
+
+        models.DATABASE.close()
+
         return jsonify({'tags': output})
     
 class PostComments(Resource):
@@ -240,11 +261,15 @@ class PostComments(Resource):
             query = (models.Comment.select(models.Comment).where(models.Comment.post == id))            
             
         except:            
+            models.DATABASE.close()
             abort(404, message="Record does not exist.")
         
         comment_schema = models.CommentSchema(many=True, only=('id', 'content', 'author.id',
                                                 'author.name', 'created_at', 'last_modified', 'parent_id'))
         output = comment_schema.dump(query).data
+
+        models.DATABASE.close()
+
         return jsonify({'comments': output})
 
 class PostVotes(Resource):
@@ -268,8 +293,11 @@ class PostVotes(Resource):
             for i in output:
                 summation += i['value']
 
+            models.DATABASE.close()
+
             return jsonify({'votes': output, 'total': summation})
         except:
+            models.DATABASE.close()
             abort(500, message="Oh, no! The Community is in turmoil!")
 
         
@@ -286,16 +314,19 @@ class PostVotes(Resource):
                 user = models.User.get(models.User.name == voter)
 
                 if not (value >= -1 and value <= 1):
+                    models.DATABASE.close()
                     abort(400, message="Missing or invalid fields.")
 
                 print('log 2')
             except:
                 print('log 3')
+                models.DATABASE.close()
                 abort(400, message="Missing or invalid fields.")
 
             print('log 4')
             
             if g.user != user:
+                models.DATABASE.close()
                 abort(401)
             
             query = models.PostVotes.select().where((models.PostVotes.post == id) & (models.PostVotes.voter == user.id))
@@ -304,16 +335,21 @@ class PostVotes(Resource):
             if query.exists():
                 models.PostVotes.update(value=value).where((models.PostVotes.post == id) & (models.PostVotes.voter == user.id)).execute()
                 print('update')
+                models.DATABASE.close()
                 Response(status=200, mimetype='application/json')
             
             else:
                 models.PostVotes.insert(post=id, voter=user.id, value=value).execute()     
                 print('new')
+                models.DATABASE.close()
                 Response(status=200, mimetype='application/json')
 
 
         else:
+            models.DATABASE.close()
             abort(400, message='Not JSON data')
+        
+        models.DATABASE.close()
 
         return Response(status=200, mimetype='application/json')
 
@@ -327,10 +363,14 @@ class PostsByTag(Resource):
                 .where(models.Tag.name == name))            
             
         except:            
+            models.DATABASE.close()
             abort(404, message="Record does not exist.")
         
         schema = models.PostSchema(many=True, exclude=('author.password', 'author.email', 'author.is_moderator', 'author.member_since'))
         output = schema.dump(query).data
+        
+        models.DATABASE.close()
+
         return jsonify({'posts': output})
 
         

@@ -40,6 +40,9 @@ class UserList(Resource):
             query = models.User.select().order_by(models.User.id)
             user_schema = models.UserSchema(many=True, only=('name','id','member_since', 'is_moderator'))
             output = user_schema.dump(query).data
+
+            models.DATABASE.close()
+
             return jsonify({'users': output})
         except:
             abort(500, message="Oh, no! The Community is in turmoil!")
@@ -55,6 +58,7 @@ class UserList(Resource):
                 query = models.User.select().where((models.User.name == name) | (models.User.email == email))
                 
                 if query.exists():
+                    models.DATABASE.close()
                     abort(422, message='Username or email already exists.')
 
                 else:                   
@@ -63,6 +67,9 @@ class UserList(Resource):
                     query = models.User.get(models.User.id == user.id)
                     user_schema = models.UserSchema(only=('name','id','member_since', 'is_moderator'))
                     output = user_schema.dump(query).data
+
+                    models.DATABASE.close()
+
                     return jsonify({'user': output})
                 
 
@@ -80,9 +87,13 @@ class User(Resource):
 
             user_schema = models.UserSchema(only=('name','id','member_since', 'is_moderator'))
             output = user_schema.dump(query).data
+
+            models.DATABASE.close()
+
             return jsonify({'user': output})
             
         except :
+            models.DATABASE.close()
             abort(404, message="Record does not exist.")
 
 class UserPosts(Resource):
@@ -91,6 +102,7 @@ class UserPosts(Resource):
         try:
             user = models.User.get(models.User.name == name)            
         except:
+            models.DATABASE.close()
             abort(404, message="user not found")
 
         query = models.Post.select().where(models.Post.author == user.id).order_by(models.Post.id)
@@ -103,6 +115,8 @@ class UserPosts(Resource):
 
         count = len(output)
 
+        models.DATABASE.close()
+
         return jsonify({'posts': output, 'count':count})
         
 
@@ -112,6 +126,7 @@ class UserComments(Resource):
         try:
             user = models.User.get(models.User.name == name)  
         except:
+            models.DATABASE.close()
             abort(404, message="user not found")
 
         query = models.Comment.select().where(models.Comment.author == user.id).order_by(models.Comment.id)
@@ -125,6 +140,8 @@ class UserComments(Resource):
         count = len(output)
 
         print('count',count)
+
+        models.DATABASE.close()
 
         return jsonify({'comments': output, 'count':count})
        

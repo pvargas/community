@@ -22,9 +22,12 @@ class CommentList(Resource):
             comment_schema = models.CommentSchema(many=True, only=('content', 'id', 'post_id', 'created_at',
             'last_modified', 'author.id','author.name', 'parent_id'))
             output = comment_schema.dump(query).data
+
+            models.DATABASE.close()
             
             return jsonify({'comments': output})
         except:
+            models.DATABASE.close()
             abort(500, message="Oh, no! The Community is in turmoil!")
 
     @auth.login_required
@@ -49,6 +52,7 @@ class CommentList(Resource):
                 user = models.User.select().where(models.User.name == author).get()
 
             except:
+                models.DATABASE.close()
                 abort(400, message='Missing or invalid fields')
             
             print('user who made comment: ', user.name)
@@ -57,10 +61,12 @@ class CommentList(Resource):
                 models.Comment.post_id == post_id, models.Comment.author == user.id)                    
             except:
                 print('log 6.1')
+                models.DATABASE.close()
                 abort(409, message='Duplicate comment.')
             
             
-            if query.exists():              
+            if query.exists():   
+                models.DATABASE.close()           
                 abort(409, message='Duplicate comment.')
                           
             
@@ -74,8 +80,11 @@ class CommentList(Resource):
 
             output = comment_schema.dump(query).data
 
+            models.DATABASE.close()
+
             return jsonify({'comment': output})          
         else:
+            models.DATABASE.close()
             abort(400, message='Request is not JSON')
         
 
@@ -87,8 +96,13 @@ class Comment(Resource):
             comment_schema = models.CommentSchema(only=('content', 'id', 'post_id', 'created_at',
             'last_modified', 'author.id','author.name', 'parent_id'))
             output = comment_schema.dump(query).data
+
+            models.DATABASE.close()
+
             return jsonify({'comment': output})
+            
         except models.DoesNotExist:
+            models.DATABASE.close()
             abort(404, message='Comment does not exists.')
 
     @auth.login_required
@@ -101,6 +115,7 @@ class Comment(Resource):
                 comment = models.Comment.select().where(models.Comment.id == id).get()
                 
             except:
+                models.DATABASE.close()
                 abort(404, message="Comment doesn't exist")
                     
             if g.user != comment.author:
@@ -120,11 +135,15 @@ class Comment(Resource):
             
                 comment = comment_schema.dump(query_2).data
 
+                models.DATABASE.close()
+
                 return jsonify({'comment': comment})
             else:
+                models.DATABASE.close()
                 abort(400, message="Missing or invalid fields.")
 
         else:
+            models.DATABASE.close()
             abort(400, message='Not JSON data')
 
     @auth.login_required
@@ -133,10 +152,12 @@ class Comment(Resource):
             comment = models.Comment.select().where(models.Comment.id == id).get()
             
         except:
+            models.DATABASE.close()
             abort(404, message="Comment doesn't exist")
                 
         if g.user != comment.author:
             # unauthorized
+            models.DATABASE.close()
             abort(401)
 
         try:
@@ -152,10 +173,14 @@ class Comment(Resource):
         
             comment = comment_schema.dump(query_2).data
 
+            models.DATABASE.close()
             return jsonify({'comment': comment})
+
         except:
+            models.DATABASE.close()
             abort(500, message="Oh, no! The Community is in turmoil!")
         
+        models.DATABASE.close()
         return Response(status=204, mimetype='application/json')
 
 class CommentVotes(Resource):
@@ -166,6 +191,7 @@ class CommentVotes(Resource):
             
             query = models.CommentVotes.select().where(models.CommentVotes.comment_id == id)
         except:
+            models.DATABASE.close()
             abort(404, message="Record does not exist.")
 
         try:
@@ -179,8 +205,11 @@ class CommentVotes(Resource):
             for i in output:
                 summation += i['value']
 
+            models.DATABASE.close()
+
             return jsonify({'votes': output, 'total': summation})
         except:
+            models.DATABASE.close()
             abort(500, message="Oh, no! The Community is in turmoil!")
 
         
@@ -202,11 +231,13 @@ class CommentVotes(Resource):
                 print('log 2')
             except:
                 print('log 3')
+                models.DATABASE.close()
                 abort(400, message="Missing or invalid fields.")
 
             print('log 4')
             
             if g.user != user:
+                models.DATABASE.close()
                 abort(401)
             
             query = models.CommentVotes.select().where((models.CommentVotes.comment == id) & (models.CommentVotes.voter == user.id))
@@ -215,17 +246,23 @@ class CommentVotes(Resource):
             if query.exists():
                 models.CommentVotes.update(value=value).where((models.CommentVotes.comment == id) & (models.CommentVotes.voter == user.id)).execute()
                 print('update')
+
+                models.DATABASE.close()
                 Response(status=200, mimetype='application/json')
             
             else:
                 models.CommentVotes.insert(comment=id, voter=user.id, value=value).execute()     
                 print('new')
+
+                models.DATABASE.close()
                 Response(status=200, mimetype='application/json')
 
 
         else:
+            models.DATABASE.close()
             abort(400, message='Not JSON data')
 
+        models.DATABASE.close()
         return Response(status=200, mimetype='application/json')
 
 

@@ -50,7 +50,7 @@ def info():
     msg = Message('Someone visited the API root', sender=mailconf.EMAIL, recipients=['matomario8@gmail.com'])
     mail.send(msg)
     '''
-    return jsonify({'Community API': {'Version': config.API_VERSION, 'Up Time': up_time(start_time), 'deployment': '3'}})
+    return jsonify({'Community API': {'Version': config.API_VERSION, 'Up Time': up_time(start_time), 'deployment': '11'}})
 
 
 if __name__ == '__main__':

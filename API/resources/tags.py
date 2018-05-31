@@ -19,9 +19,13 @@ class TagList(Resource):
             query = models.Tag.select().order_by(models.Tag.id)
             tag_schema = models.TagSchema(many=True)
             output = tag_schema.dump(query).data
+
+            models.DATABASE.close()
+
             return jsonify({'tags': output})
         except:
-            pass
+            models.DATABASE.close()
+            #pass
 
     def post(self):
         try:
@@ -39,13 +43,19 @@ class TagList(Resource):
                         query = models.Tag.get(models.Tag.id == tag_id)
                         tag_schema = models.UserSchema()
                         output = tag_schema.dump(query).data
+
+                        models.DATABASE.close()
+
                         return jsonify({'tag': output})
                 else:
+                    models.DATABASE.close()
                     return jsonify({'error': {'message': 'missing required field(s).'}})
             else:
+                models.DATABASE.close()
                 abort(400)
         except:
-            pass
+            models.DATABASE.close()
+            #pass
 
 
 class Tag(Resource):
@@ -54,8 +64,13 @@ class Tag(Resource):
             query = models.Tag.get(models.Tag.name == name)
             tag_schema = models.TagSchema()
             output = tag_schema.dump(query).data
+
+            models.DATABASE.close()
+
             return jsonify({'tag': output})
+
         except models.DoesNotExist:
+            models.DATABASE.close()
             return jsonify({'error': {'message': 'record does not exist.'}})
 
 
