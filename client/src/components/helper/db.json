@@ -1,0 +1,280 @@
+{
+  "comments": [
+    {
+      "id": 1,
+      "parent_id": null,
+      "author_id": 1,
+      "post_id": 1,
+      "content": "i think hotdogs are the wurst",
+      "created_at": "11/11/18",
+      "last_modified": null
+    },
+    {
+      "id": 2,
+      "parent_id": 1,
+      "author_id": 3,
+      "post_id": 1,
+      "content": "i disagree with this post. here's why: #1 first and foremost the issue here is that...",
+      "created_at": "11/10/18",
+      "last_modified": null
+    },
+    {
+      "id": 4,
+      "parent_id": null,
+      "author_id": 1,
+      "post_id": 1,
+      "content": "blah blah comment blah blah posts this is a comment to see how far it will stretch across the screenblah blah comment blah blah posts this is a comment to see how far it will stretch across the screenblah blah comment blah blah posts this is a comment to see how far it will stretch across the screenblah blah comment blah blah posts this is a comment to see how far it will stretch across the screen",
+      "created_at": "11/10/18",
+      "last_modified": null
+    },
+    {
+      "id": 3,
+      "parent_id": 1,
+      "author_id": 2,
+      "post_id": 1,
+      "content": "this is another comment this is another comment this is another comment fskfdjkds",
+      "created_at": "11/10/18",
+      "last_modified": null
+    },
+    {
+      "id": 6,
+      "parent_id": 3,
+      "author_id": 6,
+      "post_id": 1,
+      "content": "what year is this",
+      "created_at": "12/1/39",
+      "last_modified": null
+    },
+    {
+      "id": 5,
+      "parent_id": null,
+      "author_id": 7,
+      "post_id": 1,
+      "content": "eyyyy",
+      "created_at": "11/11/18",
+      "last_modified": null
+    },
+    {
+      "content": "the ol community switcheroo",
+      "id": 7,
+      "author_id": 8,
+      "parent_id": 6,
+      "post_id": 1,
+      "created_at": "11/10/18",
+      "last_modified": "11/10/18"
+    },
+    {
+      "content": "im downvoting this post because i don't like it. please never post here again.",
+      "id": 8,
+      "author_id": 9,
+      "parent_id": 5,
+      "post_id": 1,
+      "created_at": "11/10/18",
+      "last_modified": "11/10/18"
+    },
+    {
+      "content": "im downvoting this post because i don't like it. please never post here again.",
+      "id": 9,
+      "author_id": 10,
+      "parent_id": 5,
+      "post_id": 1,
+      "created_at": "11/10/18",
+      "last_modified": "11/10/18"
+    },
+    {
+      "parent_id": 1,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "I disagree.",
+      "id": 10
+    },
+    {
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "fsdfsd",
+      "id": 11
+    },
+    {
+      "parent_id": 1,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "i disagree",
+      "id": 12
+    },
+    {
+      "parent_id": 6,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "wy",
+      "id": 13
+    },
+    {
+      "parent_id": 3,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "f",
+      "id": 14
+    },
+    {
+      "parent_id": 6,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "fds",
+      "id": 15
+    },
+    {
+      "parent_id": 3,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "g",
+      "id": 16
+    },
+    {
+      "parent_id": 12,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "gg",
+      "id": 17
+    },
+    {
+      "parent_id": 12,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "sdf",
+      "id": 18
+    },
+    {
+      "parent_id": 7,
+      "post_id": 1,
+      "author_id": 7,
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "content": "ey",
+      "id": 19
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "author_id": 1,
+      "title": "a post",
+      "is_url": false,
+      "content": "fdafsdf",
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "tags": [
+        {
+          "name": "generic"
+        },
+        {
+          "name": "reddit clone"
+        },
+        {
+          "name": "web design"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "author_id": 1,
+      "title": "another post",
+      "is_url": false,
+      "content": "This is a post this is a post this is a post i'm writing stuff",
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "tags": [
+        {
+          "name": "sports"
+        },
+        {
+          "name": "vidya games"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "author_id": 2,
+      "title": "third post",
+      "is_url": true,
+      "content": "https://medium.com/s/story/down-in-a-dead-mans-town-8bff2d3c3234",
+      "created_at": "11/11/18",
+      "last_modified": "11/11/18",
+      "tags": [
+        {
+          "name": "medium"
+        },
+        {
+          "name": "something"
+        }
+      ]
+    },
+    {
+        "id": 4,
+        "author_id": 1,
+        "title": "another post",
+        "is_url": false,
+        "content": "This is a post this is a post this is a post i'm writing stuff",
+        "created_at": "11/11/18",
+        "last_modified": "11/11/18",
+        "tags": [
+            {
+            "name": "sports"
+            },
+            {
+            "name": "vidya games"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "author_id": 1,
+        "title": "another post",
+        "is_url": false,
+        "content": "This is a post this is a post this is a post i'm writing stuff",
+        "created_at": "11/11/18",
+        "last_modified": "11/11/18",
+        "tags": [
+            {
+            "name": "sports"
+            },
+            {
+            "name": "vidya games"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "author_id": 1,
+        "title": "another post",
+        "is_url": false,
+        "content": "This is a post this is a post this is a post i'm writing stuff",
+        "created_at": "11/11/18",
+        "last_modified": "11/11/18",
+        "tags": [
+            {
+            "name": "sports"
+            },
+            {
+            "name": "vidya games"
+            }
+        ]
+    }
+  ]
+}
