@@ -12,7 +12,7 @@ It can currently be accessed [here](https://www.cmunity.online)
 * [VUE.js](https://vuejs.org/)
 
 ## Contributors
-* API: [Pablo Vargas](https://github.com/VirtualDistortion)
+* API: [Pablo Vargas](https://github.com/pvargas)
 * Frontend: [Romario Mato](https://github.com/matomario8)
 
 ## Documentation
