@@ -10,16 +10,27 @@ config.py
 
 /.vscode
 
-/API/api_env/
-/API/api_env
+/api_env/
+/api_env
 
-/API/__pycache__
-/API/resources/__pycache__
-/API/Include
-/API/Lib
-/API/Scripts
-/API/tcl
-/API/pip-selfcheck.py
-/API/config_aws.py
-/API/config_local.py
-/API/config.py
+/__pycache__
+/resources/__pycache__
+/Include
+/Lib
+/Scripts
+/tcl
+pip-selfcheck.py
+config_aws.py
+config_local.py
+config.py
+
+
+
+# Elastic Beanstalk Files
+
+.elasticbeanstalk/*
+
+!.elasticbeanstalk/*.cfg.yml
+
+!.elasticbeanstalk/*.global.yml
+

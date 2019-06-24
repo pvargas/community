@@ -1,24 +1,20 @@
 ![Logo](/logo2.png?raw=true "Community")
 
-![Jenkins](https://img.shields.io/jenkins/s/https/jenkins.qa.ubuntu.com/view/Precise/view/All%20Precise/job/precise-desktop-amd64_default.svg)
+Community is a content sharing and rating platform, inspired by Reddit and Medium.
 
-Community is a content sharing and rating platform, inspired by Reddit and Medium, and our need to find a capstone project.
-
-~~It can be accessed[ here.](https://www.cmunity.online)~~ The website has been taken down indefinitely.
+~~It can be accessed[ here.](https://www.cmunity.online)~~ The site has been taken down indefinitely.
 
 ![Screen](/screen.png?raw=true "Site")
 
 ## Built With
 * [Flask](http://flask.pocoo.org/)
-* [VUE.js](https://vuejs.org/)
 
-## Contributors
-* API: [Pablo Vargas](https://github.com/pvargas)
-* Frontend: [Romario Mato](https://github.com/matomario8)
+## ⚠️ The API and client web client have been split into separate repos ⚠️
+The web client repo can be found [here](https://github.com/matomario8/community).
 
 ## Documentation
 
-* [API](https://docs.google.com/document/d/13Bup6NOdC_ssQRR-LY7kVqHzGjqYTZuLjdWwAbSQGXA/edit#heading=h.xfp9wjg4znp7)
-
-
+⚠️ Outdated ⚠️
+* ~~[API](https://docs.google.com/document/d/13Bup6NOdC_ssQRR-LY7kVqHzGjqYTZuLjdWwAbSQGXA/edit#heading=h.xfp9wjg4znp7)~~ 
+  
 
