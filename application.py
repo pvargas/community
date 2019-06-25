@@ -9,7 +9,7 @@ from flask_mail import Mail, Message
 
 import models
 from auth import auth
-from config import App as config, Mail as mailconf
+from config import App as config
 from resources.account import account_api
 from resources.comments import comments_api
 from resources.posts import posts_api
@@ -26,14 +26,6 @@ application.register_blueprint(tags_api, url_prefix=config.URL_PREFIX)
 application.register_blueprint(comments_api, url_prefix=config.URL_PREFIX)
 application.register_blueprint(account_api, url_prefix=config.URL_PREFIX)
 
-application.config['MAIL_SERVER'] = mailconf.SERVER
-application.config['MAIL_PORT'] = mailconf.PORT
-application.config['MAIL_USE_SSL'] = mailconf.SSL
-application.config['MAIL_USERNAME'] = mailconf.EMAIL
-application.config['MAIL_PASSWORD'] = mailconf.PASSWORD
-
-mail = Mail(application)
-
 def up_time(seconds):
     t = time.time() - seconds
     m, s = divmod(t, 60)
@@ -42,7 +34,6 @@ def up_time(seconds):
 
 # limiter = Limiter(application, global_limits=['7200/hour'], key_func=get_ipaddr)
 # limiter.exempt(users)
-
 
 @application.route('/', methods=['GET'])
 def info():
