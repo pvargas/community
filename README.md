@@ -4,8 +4,6 @@ Community is a content sharing and rating platform, inspired by Reddit and Mediu
 
 ~~It can be accessed[ here.](https://www.cmunity.online)~~ The site has been taken down indefinitely.
 
-![Screen](/screen.png?raw=true "Site")
-
 ## Built With
 * [Flask](http://flask.pocoo.org/)
 
